@@ -1,0 +1,9 @@
+{% extends "templates/web.html" %}
+{% block page_content %}
+  <h2>{{ shop.shop_name }}</h2>
+  <p><strong>Airport:</strong> {{ shop.airport }}</p>
+  <p><strong>Type:</strong> {{ shop.shop_type }}</p>
+  <p><strong>Area:</strong> {{ shop.area_sq_ft }} sq ft</p>
+  <p><strong>Rent:</strong> {{ shop.rent_amount }}</p>
+  <p><strong>Occupied:</strong> {% if shop.is_occupied %}Yes{% else %}No{% endif %}</p>
+{% endblock %}

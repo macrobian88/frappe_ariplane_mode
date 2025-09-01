@@ -1,0 +1,16 @@
+{% extends "templates/web.html" %}
+{% block page_content %}
+  <h1>Airport Shops</h1>
+  <ul>
+    {% for shop in shops %}
+      <li>
+        <a href="/shop?name={{ shop.name }}">{{ shop.shop_name }}</a>
+        — Airport: {{ shop.airport }}
+        — Type: {{ shop.shop_type }}
+        — {% if shop.is_occupied %}Occupied{% else %}Free{% endif %}
+      </li>
+    {% else %}
+      <li>No shops found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

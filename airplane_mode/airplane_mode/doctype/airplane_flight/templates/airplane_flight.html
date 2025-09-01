@@ -1,0 +1,14 @@
+{% extends "templates/web.html" %}
+{% block page_content %}
+<h1>{{ doc.name }}</h1>
+
+<p><b>Airline:</b> {{ doc.airline }}</p>
+<p><b>Route:</b> {{ doc.source_airport_code }} – {{ doc.destination_airport_code }}</p>
+<p><b>Date:</b> {{ frappe.utils.format_date(doc.date_of_departure, "d MMMM, YYYY") }}</p>
+<p><b>Time:</b> {{ frappe.utils.format_time(doc.time_of_departure, "hh:mm a") }}</p>
+<p><b>Duration:</b> {{ frappe.utils.format_duration(doc.duration) }}</p>
+
+<a href="/flight-booking-web-form/new?flight={{ doc.name | urlencode }}">
+  <button>Book Flight</button>
+</a>
+{% endblock %}
