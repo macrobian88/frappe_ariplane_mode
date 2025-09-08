@@ -1,0 +1,65 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-21 17:05:12.940441",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contract",
+  "month",
+  "due_date",
+  "bill_amount",
+  "payment_status",
+  "payment_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "contract",
+   "fieldtype": "Link",
+   "label": "contract",
+   "options": "contract_shop"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Data",
+   "label": "month"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "due date"
+  },
+  {
+   "fieldname": "bill_amount",
+   "fieldtype": "Currency",
+   "label": "bill amount"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "payment status",
+   "options": "Unpaid\nPaid"
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Date",
+   "label": "payment date",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-21 17:43:00.439862",
+ "modified_by": "Administrator",
+ "module": "Airplane Mode",
+ "name": "Monthly Bill",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

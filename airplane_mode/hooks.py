@@ -241,24 +241,30 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-doc_events = {
-    "Airplane Flight": {
-        "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.sync_gate_to_tickets"
-    },
-    "contract_shop": {
-        "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice"
-    }
-}
+# doc_events = {
+#     # "Airplane Flight": {
+#     #     "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.sync_gate_to_tickets"
+#     # },
+#     "contract_shop": {
+#         "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice"
+#     },
+#     "Sales Invoice": {
+#         "on_update": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
+#     },
+#     "Payment Entry": {
+#         "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
+#     }
+# }
 
-scheduler_events = {
-    "daily": [
-        "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders"
-    ]
-}
-fixtures = [
-    {
-        "dt": "Shop Type",
-        "filters": [["shop_type_name", "in", ["Stall", "Walk-through", "Normal"]]]
-    }
-]
+# scheduler_events = {
+#     "daily": [
+#         "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders"
+#     ]
+# }
+# fixtures = [
+#     {
+#         "dt": "Shop Type",
+#         "filters": [["shop_type_name", "in", ["Stall", "Walk-through", "Normal"]]]
+#     }
+# ]
 

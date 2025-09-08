@@ -55,45 +55,47 @@ from datetime import datetime
 class AirplaneFlight(WebsiteGenerator):
 
     def autoname(self):
-        today = datetime.today()
-        date_part = today.strftime("%m-%Y")
-        count = frappe.db.count("Airplane Flight") + 1
-        prefix = frappe.get_value("Airplane", self.airplane, "airline").upper()
-        self.name = f"{prefix}-{date_part}-{str(count).zfill(5)}"
+            today = datetime.today()
+            date_part = today.strftime("%m-%Y")
+            count = frappe.db.count("Airplane Flight") + 1
+            prefix = frappe.get_value("Airplane", self.airplane, "airline").upper()
+            self.name = f"{prefix}-{date_part}-{str(count).zfill(5)}"
 
     def on_submit(self):
-        self.db_set("status", "Completed")
+            self.db_set("status", "Completed")
 
-def sync_gate_to_tickets(doc, method=None):
-    """Update all tickets (draft + submitted) when flight's gate changes."""
-    if not doc.gate_number:
-        return
-    frappe.enqueue(
-        "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_gate_number_for_flight",
-        flight_name=doc.name,
-        gate_number=doc.gate_number,
-        update_drafts=True,   # include draft tickets too
-        queue="default"
-    )
-def on_update(doc, method=None):
-    """
-    Automatically enqueue ticket gate number updates when the flight gate changes.
-    Works for both Draft and Submitted flights.
-    """
-    frappe.enqueue(
-        "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_gate_number_for_flight",
-        flight_name=doc.name,
-        gate_number=doc.gate_number,
-        update_drafts=(doc.docstatus == 0),  # Allow draft tickets if flight is draft
-        queue="default",  # can be "long" if tickets are many
-        timeout=300
-    )
+    # def sync_gate_to_tickets(doc, method=None):
+    #     """Update all tickets (draft + submitted) when flight's gate changes."""
+    #     if not doc.gate_number:
+    #         return
+    #     frappe.enqueue(
+    #         "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_gate_number_for_flight",
+    #         flight_name=doc.name,
+    #         gate_number=doc.gate_number,
+    #         update_drafts=True,   # include draft tickets too
+    #         queue="default"
+    #     )
+    def on_update(self):
+        """
+        Automatically enqueue ticket gate number updates when the flight gate changes.
+        Works for both Draft and Submitted flights.
+        """
+        # frappe.enqueue(
+        #     "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_gate_number_for_flight",
+        #     flight_name=doc.name,
+        #     gate_number=doc.gate_number,
+        #     update_drafts=(doc.docstatus == 0),  # Allow draft tickets if flight is draft
+        #     queue="default",  # can be "long" if tickets are many
+        #     timeout=300
+        # )
+        update_gate_number_for_flight(self.name,self.gate_number,self.docstatus == 0)
 @frappe.whitelist()
 def update_gate_number_for_flight(flight_name, gate_number, batch_size=100, update_drafts=False):
     """
     Background job to update gate_number for all tickets in a given flight.
     Respects boarded status and optionally updates Draft tickets.
     """
+   
     frappe.logger().info(
         f"[GateSync] Starting update for flight={flight_name}, gate={gate_number}, update_drafts={update_drafts}"
     )
@@ -104,6 +106,7 @@ def update_gate_number_for_flight(flight_name, gate_number, batch_size=100, upda
 
     start = 0
     while True:
+        print("test")
         tickets = frappe.db.get_list(
             "Airplane Ticket",
             filters={
