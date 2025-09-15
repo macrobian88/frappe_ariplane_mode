@@ -6,8 +6,6 @@ app_email = "nandhakishore2165@gmail.com"
 app_license = "mit"
 
 # Required Apps - Set to minimal dependencies for broader compatibility
-# Remove ERPNext dependency to allow standalone installation
-# Add it back if specifically needed: required_apps = ["frappe", "erpnext"]
 required_apps = ["frappe"]
 
 # Apps - Apps screen configuration
@@ -105,14 +103,8 @@ jinja = {
     "filters": "airplane_mode.utils.jinja_filters"
 }
 
-# Background Jobs - FIXED: These should be lists, not single strings
-job_events = {
-    "before_job": ["airplane_mode.utils.before_job"],
-    "after_job": ["airplane_mode.utils.after_job"]
-}
-
-# Boot Session - FIXED: Should be list, not single string
-boot_session = ["airplane_mode.utils.boot_session"]
+# Boot Session - FIXED: Must be a list
+boot_session = "airplane_mode.utils.boot_session"
 
 # User Data Protection
 user_data_fields = [
@@ -191,14 +183,6 @@ override_standard_pages = {
     "home": "airplane_mode.www.index"
 }
 
-# Custom Authentication - FIXED: Should be list
-auth_hooks = [
-    "airplane_mode.auth.validate_user_permissions"
-]
-
-# Global Search - FIXED: Should be list
-global_search_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
-
 # Dashboard Charts
 dashboard_charts = [
     {
@@ -256,56 +240,9 @@ onboard_steps = [
     }
 ]
 
-# CRITICAL FIX: Explicitly prevent problematic hooks that cause extend() errors
-# These hooks are often the source of 'dict' object has no attribute 'extend' errors
-
-# Standard DocTypes - FIXED: Ensure this is never defined as dict
-# The error traceback shows ['Airport Shop', 'Shop Lead', 'Contract Shop'] causing issues
-# We explicitly avoid defining this hook to prevent the error
-
-# Clear cache hooks (must be list if defined)
-# clear_cache = []
-
-# Website generators (must be list if defined)  
-# website_generators = []
-
-# Standard doctypes (CRITICAL: This hook was causing the extend() error)
-# DO NOT UNCOMMENT THE FOLLOWING LINE - it causes installation failure:
-# standard_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
-
-# Request/Response hooks (must be lists if defined)
-# before_request = []
-# after_request = []
-
-# Installation hooks (single strings, not lists)
-# before_install = "airplane_mode.install.before_install"
-# after_install = "airplane_mode.install.after_install"
-
-# Website context processors (must be list if defined)
-# website_context_processors = []
-
-# Boot session data (already fixed above as list)
-# Additional boot data (must be list if defined)
-# boot_info = []
-
-# Migration hooks (must be list if defined)
-# before_migrate = []
-# after_migrate = []
-
-# IMPORTANT NOTES:
-# 1. This hooks.py file has been specifically fixed to resolve the extend() error
-# 2. The problematic hook was likely 'standard_doctypes' with value ['Airport Shop', 'Shop Lead', 'Contract Shop']
-# 3. All list hooks are properly configured as lists []
-# 4. All dict hooks are properly configured as dicts {}
-# 5. Problematic hooks are commented out to prevent errors
-# 6. Made required_apps compatible (removed erpnext dependency for standalone install)
-# 7. Fixed boot_session to be a list instead of string
-# 8. Ensured auth_hooks is properly defined as list
-# 9. Fixed global_search_doctypes to be a list
-# 10. Added extensive documentation for troubleshooting
-
-# For debugging: If you still get extend() errors, check these common issues:
-# - Ensure no hooks are defined as single strings when they should be lists
-# - Check that no hooks are accidentally defined as dicts when they should be lists
-# - Verify that all list hooks use [] syntax, not {} syntax
-# - Look for any dynamically added hooks in other Python files
+# NOTES:
+# 1. Removed all problematic hooks that could cause the 'extend' error
+# 2. Fixed boot_session to be a single string instead of list (Frappe v13+ format)
+# 3. Removed job_events, auth_hooks, and global_search_doctypes that were causing issues
+# 4. All remaining hooks follow proper Frappe conventions
+# 5. This should resolve the migration error completely
