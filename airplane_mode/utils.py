@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-from frappe.utils import get_site_url, get_datetime, getdate, format_datetime
+from frappe.utils import get_datetime, getdate, format_datetime
 from frappe.utils.password import get_decrypted_password
 
 
@@ -11,10 +11,16 @@ def boot_session(bootinfo):
     """
     user = frappe.session.user
     
+    # Get site URL safely
+    try:
+        site_url = frappe.utils.get_site_url(frappe.local.site)
+    except Exception:
+        site_url = frappe.local.site or "localhost"
+    
     # Add user-specific airport management data
     bootinfo.airport_data = {
         "user_roles": frappe.get_roles(user),
-        "site_url": get_site_url(),
+        "site_url": site_url,
         "user_email": user,
         "has_airport_access": has_airport_access(user)
     }
