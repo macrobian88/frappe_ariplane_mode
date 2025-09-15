@@ -1,0 +1,200 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Airport Management System") }}{% endblock %}
+
+{% block content %}
+<div class="hero-section py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">{{ _("Airport Management System") }}</h1>
+                <p class="lead mb-4">{{ _("Comprehensive solution for airport operations, shop management, and flight coordination") }}</p>
+                <div class="d-flex gap-3">
+                    <a href="/shop-portal" class="btn btn-light btn-lg">{{ _("Shop Portal") }}</a>
+                    <a href="/flights" class="btn btn-outline-light btn-lg">{{ _("View Flights") }}</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-25 border-0 text-white">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ stats.total_shops or 0 }}</h3>
+                                <p class="card-text">{{ _("Total Shops") }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-25 border-0 text-white">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ stats.available_shops or 0 }}</h3>
+                                <p class="card-text">{{ _("Available") }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-25 border-0 text-white">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ stats.active_flights or 0 }}</h3>
+                                <p class="card-text">{{ _("Active Flights") }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-25 border-0 text-white">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ stats.shop_types or 0 }}</h3>
+                                <p class="card-text">{{ _("Shop Types") }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Section -->
+<div class="container py-5">
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <i class="fas fa-plane fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">{{ _("Flight Operations") }}</h5>
+                    <p class="card-text flex-grow-1">{{ _("View flight schedules, gates, and real-time updates") }}</p>
+                    <a href="/flights" class="btn btn-primary">{{ _("View Flights") }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <i class="fas fa-store fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">{{ _("Shop Portal") }}</h5>
+                    <p class="card-text flex-grow-1">{{ _("Manage shop rentals, contracts, and operations") }}</p>
+                    <a href="/shop-portal" class="btn btn-success">{{ _("Enter Portal") }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <i class="fas fa-search fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">{{ _("Available Shops") }}</h5>
+                    <p class="card-text flex-grow-1">{{ _("Browse available retail spaces and locations") }}</p>
+                    <a href="/shop-availability" class="btn btn-info">{{ _("Browse Shops") }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <i class="fas fa-edit fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">{{ _("Apply for Shop") }}</h5>
+                    <p class="card-text flex-grow-1">{{ _("Submit your application for shop rental") }}</p>
+                    <a href="/apply-shop" class="btn btn-warning">{{ _("Apply Now") }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if featured_shops %}
+<!-- Featured Available Shops -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-6">{{ _("Featured Available Shops") }}</h2>
+                <p class="lead">{{ _("Prime locations available for rent") }}</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for shop in featured_shops %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ shop.shop_name }}</h5>
+                        <p class="card-text">
+                            <span class="badge bg-secondary">{{ shop.shop_type }}</span><br>
+                            <small class="text-muted">{{ _("Area") }}: {{ shop.area }} sqft</small>
+                        </p>
+                        <h6 class="text-primary">₹{{ "{:,}".format(shop.rent_per_month or 0) }}/month</h6>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="/shop/{{ shop.name }}" class="btn btn-outline-primary btn-sm">{{ _("View Details") }}</a>
+                        <a href="/apply-shop?shop={{ shop.name }}" class="btn btn-primary btn-sm">{{ _("Apply") }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="/shop-availability" class="btn btn-primary btn-lg">{{ _("View All Available Shops") }}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if shop_types %}
+<!-- Shop Types Section -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-6">{{ _("Shop Categories") }}</h2>
+            <p class="lead">{{ _("Different types of retail spaces available") }}</p>
+        </div>
+    </div>
+    <div class="row">
+        {% for shop_type in shop_types %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">{{ shop_type.shop_type_name }}</h5>
+                    <p class="card-text">{{ shop_type.description or _("Premium retail space") }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- User Info Section (if logged in) -->
+{% if frappe.session.user != "Guest" %}
+<div class="bg-primary text-white py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4 class="mb-0">{{ _("Welcome back, {0}").format(user_name or frappe.session.user) }}!</h4>
+                <p class="mb-0">{{ _("Access your personalized dashboard and manage your operations") }}</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/app" class="btn btn-light">{{ _("Go to Dashboard") }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.hero-section {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.bg-opacity-25 {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+</style>
+{% endblock %}
