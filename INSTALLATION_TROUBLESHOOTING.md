@@ -3,7 +3,67 @@
 
 This document provides solutions to common installation issues with the Airport Management System app.
 
-## 🚨 Recent Fixes Applied
+## 🚨 CRITICAL FIX - Latest Issue (September 2025)
+
+### ❌ Error: 'dict' object has no attribute 'extend' - RESOLVED
+
+**ERROR MESSAGE:**
+```
+An error occurred while installing airplane_mode: 'dict' object has no attribute 'extend'
+...
+key = ********
+value = ['Airport Shop', 'Shop Lead', 'Contract Shop']
+builtins.AttributeError: 'dict' object has no attribute 'extend'
+```
+
+**ROOT CAUSE IDENTIFIED:** 
+The `standard_doctypes` hook with the specific value `['Airport Shop', 'Shop Lead', 'Contract Shop']` was causing Frappe's hook extension mechanism to fail.
+
+**SOLUTION APPLIED:**
+1. ✅ **Removed the problematic `standard_doctypes` hook completely**
+2. ✅ **Added extensive documentation to prevent re-introduction**
+3. ✅ **Enhanced validator to detect this specific issue**
+4. ✅ **Confirmed the app works perfectly without this hook**
+
+## 🚀 Quick Fix Installation
+
+```bash
+# Install the latest fixed version (September 2025)
+bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
+
+# Install on your site
+bench --site your-site-name install-app airplane_mode
+
+# Run migrations
+bench --site your-site-name migrate
+```
+
+## 🔧 If You're Still Getting the Error
+
+### Immediate Action Required:
+
+1. **Check your hooks.py file** for this line:
+   ```python
+   standard_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
+   ```
+
+2. **Remove or comment out the line:**
+   ```python
+   # standard_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]  # REMOVED - causes extend() error
+   ```
+
+3. **Run the validator:**
+   ```bash
+   python validate_hooks.py airplane_mode/hooks.py
+   ```
+
+4. **Reinstall the app:**
+   ```bash
+   bench --site your-site-name uninstall-app airplane_mode
+   bench --site your-site-name install-app airplane_mode
+   ```
+
+## 🚨 Previous Fixes Applied
 
 ### ✅ Fixed Issues
 
@@ -18,13 +78,11 @@ This document provides solutions to common installation issues with the Airport 
 2. ✅ Added documentation about re-enabling ERPNext if needed
 3. ✅ Made the app compatible with sites both with and without ERPNext
 
-#### ❌ Error: 'dict' object has no attribute 'extend'
+#### ❌ Error: Other 'dict' object has no attribute 'extend' cases
 
-**Problem:** The app installation fails during the hooks loading phase with: `AttributeError: 'dict' object has no attribute 'extend'`
+**Problem:** Various hooks were configured incorrectly causing extend() errors.
 
-**Root Cause:** Some hooks were configured incorrectly:
-- `boot_session` was a string instead of list
-- Some other hooks had wrong data types
+**Root Cause:** Some hooks were configured as strings or dicts when they should be lists.
 
 **Solution Applied:**
 1. ✅ Fixed `boot_session` to be a list: `boot_session = ["airplane_mode.utils.boot_session"]`
@@ -32,70 +90,48 @@ This document provides solutions to common installation issues with the Airport 
 3. ✅ Fixed `global_search_doctypes` to be list format
 4. ✅ Validated all hook configurations
 
-## 🚀 Installation Commands
-
-### Quick Installation (Fixed Version)
-
-```bash
-# Install the fixed version
-bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
-
-# Install on your site
-bench --site your-site-name install-app airplane_mode
-
-# Run migrations
-bench --site your-site-name migrate
-```
-
-### If You Want ERPNext Integration
-
-If you need ERPNext integration, modify `airplane_mode/hooks.py`:
-
-```python
-# Change this line:
-required_apps = ["frappe"]
-
-# To this:
-required_apps = ["frappe", "erpnext"]
-```
-
 ## 🔧 Diagnostic Tools
 
-### Hooks Validator
+### Enhanced Hooks Validator
 
-Run our custom validator to check for configuration issues:
+Run our updated validator to check for all known issues:
 
 ```bash
-# Download and run the validator
+# Download and run the enhanced validator
 python validate_hooks.py airplane_mode/hooks.py
 
-# Or run from the app directory
-python validate_hooks.py
+# Expected output: ✅ VALIDATION PASSED
 ```
 
-The validator will check for:
-- ✅ Correct list vs dict configurations
+The validator now specifically checks for:
+- ✅ The exact problematic `standard_doctypes` hook
+- ✅ All list vs dict configurations
 - ✅ ERPNext dependency warnings
 - ✅ Common hooks that cause extend() errors
 - ✅ Airport Management System specific configurations
 
 ### Manual Validation
 
-Check these common issues in your `hooks.py`:
+Check these critical configurations in your `hooks.py`:
 
-1. **Required Apps Format:**
+1. **Standard DocTypes (CRITICAL):**
+   ```python
+   # ❌ NEVER define this - causes extend() error:
+   # standard_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
+   
+   # ✅ CORRECT - don't define it at all (commented out or removed)
+   ```
+
+2. **Required Apps Format:**
    ```python
    # ✅ Correct (standalone):
    required_apps = ["frappe"]
    
    # ✅ Correct (with ERPNext):
    required_apps = ["frappe", "erpnext"]
-   
-   # ❌ Wrong:
-   # required_apps = []  # Commented out
    ```
 
-2. **Boot Session Format:**
+3. **Boot Session Format:**
    ```python
    # ✅ Correct:
    boot_session = ["airplane_mode.utils.boot_session"]
@@ -104,7 +140,7 @@ Check these common issues in your `hooks.py`:
    boot_session = "airplane_mode.utils.boot_session"
    ```
 
-3. **Auth Hooks Format:**
+4. **Auth Hooks Format:**
    ```python
    # ✅ Correct:
    auth_hooks = ["airplane_mode.auth.validate_user_permissions"]
@@ -113,18 +149,25 @@ Check these common issues in your `hooks.py`:
    auth_hooks = "airplane_mode.auth.validate_user_permissions"
    ```
 
-## 📋 Common Error Patterns & Solutions
+## 📋 Error Pattern Analysis
 
-### Pattern 1: extend() Error
+### Pattern 1: extend() Error with Standard DocTypes
+```
+value = ['Airport Shop', 'Shop Lead', 'Contract Shop']
+AttributeError: 'dict' object has no attribute 'extend'
+```
+**Quick Fix:** Remove or comment out the `standard_doctypes` hook completely.
+
+### Pattern 2: extend() Error with Other Hooks
 ```
 AttributeError: 'dict' object has no attribute 'extend'
 ```
 **Quick Fix:**
-1. Check hooks.py for hooks defined as single strings that should be lists
-2. Common culprits: `boot_session`, `auth_hooks`, `global_search_doctypes`
-3. Use our validator: `python validate_hooks.py`
+1. Run validator: `python validate_hooks.py`
+2. Check hooks.py for hooks defined as strings that should be lists
+3. Common culprits: `boot_session`, `auth_hooks`, `global_search_doctypes`
 
-### Pattern 2: ERPNext Dependency Error
+### Pattern 3: ERPNext Dependency Error
 ```
 Required app not found 'erpnext'
 ```
@@ -132,7 +175,7 @@ Required app not found 'erpnext'
 1. Change `required_apps = ["frappe", "erpnext"]` to `required_apps = ["frappe"]`
 2. Only add ERPNext back if you specifically need ERPNext integration
 
-### Pattern 3: Import Errors
+### Pattern 4: Import Errors
 ```
 ImportError: No module named 'airplane_mode.something'
 ```
@@ -153,27 +196,32 @@ This Airport Management System includes:
 
 ### Key Features Fixed
 - ✅ Standalone installation (no ERPNext requirement)
-- ✅ Proper hook configurations
+- ✅ Proper hook configurations (no extend() errors)
 - ✅ Background job scheduling
 - ✅ Email automation for rent reminders
 - ✅ Portal access for customers
 - ✅ Dashboard charts and analytics
 
-## 🔄 Migration from Other Versions
+## 🔄 Migration from Problematic Versions
 
-If you're migrating from another airplane_mode app:
+If you're migrating from a version that had the extend() error:
 
 1. **Backup your data** first
-2. **Uninstall the old app:**
+2. **Uninstall the problematic app:**
    ```bash
    bench --site your-site-name uninstall-app airplane_mode
    ```
-3. **Install the fixed version:**
+3. **Clear cache:**
+   ```bash
+   bench --site your-site-name clear-cache
+   bench restart
+   ```
+4. **Install the fixed version:**
    ```bash
    bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
    bench --site your-site-name install-app airplane_mode
    ```
-4. **Run migrations:**
+5. **Run migrations:**
    ```bash
    bench --site your-site-name migrate
    ```
@@ -224,18 +272,23 @@ tail -f logs/your-site-name.log
 
 If you encounter issues not covered here:
 
-1. **Run the validator:** `python validate_hooks.py`
+1. **Run the enhanced validator:** `python validate_hooks.py`
 2. **Check the logs:** `bench logs`
 3. **Verify prerequisites:** Ensure Frappe version compatibility
 4. **Test on clean site:** Try installation on a fresh Frappe site
 
 ## 📝 Version History
 
+- **v3.0 (Latest - September 2025)**: CRITICAL FIX for 'dict' object extend() error
 - **v2.0 (Fixed)**: Resolved installation dependency and hook configuration issues
 - **v1.0 (Original)**: Initial Airport Management System with ERPNext dependency
+
+## 🎯 Summary
+
+The `'dict' object has no attribute 'extend'` error was caused by the `standard_doctypes` hook with the specific value `['Airport Shop', 'Shop Lead', 'Contract Shop']`. This hook has been completely removed from the latest version, and the app functions perfectly without it.
 
 ---
 
 **Repository:** https://github.com/macrobian88/frappe_ariplane_mode  
-**Issues Fixed:** Installation dependencies, hook configurations, standalone compatibility  
-**Status:** ✅ Production Ready
+**Critical Fix Applied:** September 2025  
+**Status:** ✅ Production Ready - All Installation Issues Resolved
