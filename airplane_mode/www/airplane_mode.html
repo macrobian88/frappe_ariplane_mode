@@ -1,0 +1,233 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Airport Management System") }}{% endblock %}
+
+{% block content %}
+{% if show_login_prompt %}
+<!-- Guest User - Login Prompt -->
+<div class="hero-section bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">{{ _("Airport Management System") }}</h1>
+        <p class="lead mb-4">{{ _("Please log in to access the management dashboard") }}</p>
+        <a href="{{ login_url }}" class="btn btn-light btn-lg">{{ _("Login") }}</a>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-plane fa-3x text-primary mb-3"></i>
+                    <h5>{{ _("Flight Operations") }}</h5>
+                    <p class="text-muted">{{ _("Manage flight schedules and operations") }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-store fa-3x text-success mb-3"></i>
+                    <h5>{{ _("Shop Management") }}</h5>
+                    <p class="text-muted">{{ _("Manage retail spaces and contracts") }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
+                    <h5>{{ _("Analytics") }}</h5>
+                    <p class="text-muted">{{ _("Revenue and performance insights") }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif no_access %}
+<!-- No Access -->
+<div class="container py-5 text-center">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <i class="fas fa-lock fa-4x text-warning mb-4"></i>
+            <h2>{{ _("Access Restricted") }}</h2>
+            <p class="lead">{{ _("You don't have permission to access the Airport Management System.") }}</p>
+            <p class="text-muted">{{ _("Please contact your administrator to get the required permissions.") }}</p>
+            <a href="/" class="btn btn-primary">{{ _("Go to Homepage") }}</a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Authorized User Dashboard -->
+<div class="bg-gradient-primary text-white py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h2 mb-1">{{ _("Airport Management Dashboard") }}</h1>
+                <p class="mb-0">{{ _("Welcome back, {0}").format(user_name or frappe.session.user) }}</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/app" class="btn btn-light">{{ _("Full Desk View") }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-primary text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-store fa-2x mb-2"></i>
+                    <h3>{{ stats.total_shops }}</h3>
+                    <small>{{ _("Total Shops") }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-success text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h3>{{ stats.available_shops }}</h3>
+                    <small>{{ _("Available") }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-info text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-file-contract fa-2x mb-2"></i>
+                    <h3>{{ stats.active_contracts }}</h3>
+                    <small>{{ _("Active Contracts") }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-warning text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3>{{ stats.pending_leads }}</h3>
+                    <small>{{ _("Pending Leads") }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-secondary text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-plane fa-2x mb-2"></i>
+                    <h3>{{ stats.total_flights }}</h3>
+                    <small>{{ _("Total Flights") }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center border-0 bg-dark text-white h-100">
+                <div class="card-body">
+                    <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                    <h3>{{ stats.scheduled_flights }}</h3>
+                    <small>{{ _("Scheduled") }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation -->
+{% if nav_items %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="border-bottom pb-2">{{ _("Quick Access") }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        {% for item in nav_items %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <a href="{{ item.route }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="{{ item.icon }} fa-2x text-primary mb-3"></i>
+                        <h6 class="card-title">{{ item.title }}</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Activities -->
+<div class="bg-light py-4 mt-4">
+    <div class="container">
+        <div class="row">
+            {% if recent_leads %}
+            <div class="col-md-6">
+                <h5 class="mb-3">{{ _("Recent Shop Leads") }}</h5>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        {% for lead in recent_leads %}
+                        <div class="d-flex justify-content-between align-items-center py-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div>
+                                <strong>{{ lead.lead_name }}</strong><br>
+                                <small class="text-muted">{{ lead.email }} • {{ lead.preferred_shop_type or "Any" }}</small>
+                            </div>
+                            <small class="text-muted">{{ frappe.utils.pretty_date(lead.creation) }}</small>
+                        </div>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="/app/shop-lead" class="btn btn-primary btn-sm">{{ _("View All Leads") }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if recent_contracts %}
+            <div class="col-md-6">
+                <h5 class="mb-3">{{ _("Recent Contracts") }}</h5>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        {% for contract in recent_contracts %}
+                        <div class="d-flex justify-content-between align-items-center py-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div>
+                                <strong>{{ contract.tenant_name }}</strong><br>
+                                <small class="text-muted">{{ contract.shop }}</small>
+                            </div>
+                            <small class="text-muted">{{ frappe.utils.pretty_date(contract.contract_start_date) }}</small>
+                        </div>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="/app/contract-shop" class="btn btn-success btn-sm">{{ _("View All Contracts") }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.card {
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
