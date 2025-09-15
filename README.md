@@ -1,6 +1,38 @@
 # Airport Management System 🛩️
 
-A comprehensive Frappe ERPNext application for managing airport operations including flight management, passenger services, crew assignment, and shop management with automated rent collection.
+> ⚠️ **Installation Issues Fixed!** This version resolves critical installation dependencies and hook configuration problems. See [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md) for details.
+
+A comprehensive Frappe application for managing airport operations including flight management, passenger services, crew assignment, and shop management with automated rent collection.
+
+## 🚨 Recent Fixes
+
+### ✅ Installation Issues Resolved
+- **Fixed**: ERPNext dependency requirement (now optional)
+- **Fixed**: 'dict' object has no attribute 'extend' error
+- **Fixed**: Hook configuration issues
+- **Added**: Standalone installation support
+- **Added**: Comprehensive validation tools
+
+## 🚀 Quick Installation (Fixed Version)
+
+```bash
+# Install the app (all issues fixed)
+bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
+
+# Install on your site
+bench --site your-site-name install-app airplane_mode
+
+# Run migrations
+bench --site your-site-name migrate
+```
+
+### 🔧 Troubleshooting
+
+If you encounter installation issues:
+
+1. **Run the validator:** `python validate_hooks.py`
+2. **Check troubleshooting guide:** [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md)
+3. **Verify compatibility:** Frappe v15+ recommended
 
 ## 🌟 Features
 
@@ -31,64 +63,23 @@ A comprehensive Frappe ERPNext application for managing airport operations inclu
 - **Automated Notifications**: Email confirmations and follow-ups
 - **Lead Management**: Automated lead capture and processing
 
-## 🚀 Installation
+## ⚙️ System Requirements
 
-### Prerequisites
-- Frappe Framework 14+
-- ERPNext (optional, for financial integration)
-- Python 3.8+
-- Node.js 16+
+### Minimum Requirements
+- **Frappe Framework**: v15.x or higher
+- **ERPNext**: Optional (v15.x if financial integration needed)
+- **Python**: 3.10+
+- **Node.js**: 16+
+- **Database**: MariaDB 10.3+ or PostgreSQL 13+
 
-### Quick Installation
+### Dependencies
+```python
+# Standalone installation (recommended)
+required_apps = ["frappe"]
 
-```bash
-# Navigate to your bench directory
-cd $PATH_TO_YOUR_BENCH
-
-# Get the app
-bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
-
-# Install the app
-bench install-app airplane_mode
-
-# Restart bench
-bench restart
+# With ERPNext integration (optional)
+required_apps = ["frappe", "erpnext"]
 ```
-
-### Development Setup
-
-```bash
-# For development mode
-bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git --branch main
-
-# Install in development mode
-bench install-app airplane_mode
-
-# Start development server
-bench start
-```
-
-## ⚙️ Configuration
-
-After installation, configure the following:
-
-### 1. Basic Setup
-- **Shop Types**: Configure shop categories (Food Court, Duty Free, etc.)
-- **Airports**: Set up your airport locations and terminals
-- **Email Settings**: Configure SMTP for automated notifications
-
-### 2. Scheduled Jobs
-Enable the following background tasks:
-- **Daily**: Rent reminder emails, monthly invoice processing
-- **Weekly**: Management reports and analytics
-- **Monthly**: Performance metrics updates
-
-### 3. Permissions
-Set up role-based permissions for:
-- Airport Shop management
-- Contract Shop administration
-- Lead management
-- Financial operations
 
 ## 🔌 API Reference
 
@@ -207,6 +198,48 @@ Pre-configured email templates for:
 - **Main Portal**: `/shop-portal`
 - **Shop Availability**: `/shop-availability`
 - **Application Form**: `/apply-shop`
+
+## 🔧 Configuration
+
+After installation, configure the following:
+
+### 1. Basic Setup
+- **Shop Types**: Configure shop categories (Food Court, Duty Free, etc.)
+- **Airports**: Set up your airport locations and terminals
+- **Email Settings**: Configure SMTP for automated notifications
+
+### 2. Scheduled Jobs
+Enable the following background tasks:
+- **Daily**: Rent reminder emails, monthly invoice processing
+- **Weekly**: Management reports and analytics
+- **Monthly**: Performance metrics updates
+
+### 3. Permissions
+Set up role-based permissions for:
+- Airport Shop management
+- Contract Shop administration
+- Lead management
+- Financial operations
+
+## 🧪 Testing Your Installation
+
+After successful installation:
+
+1. **Check App Lists:**
+   - Log into your Frappe site
+   - Verify "Airport Management System" appears in apps
+
+2. **Test Core Doctypes:**
+   - Navigate to: Airport Shop, Shop Lead, Contract Shop
+   - Create test records
+
+3. **Test Portal Features:**
+   - Visit `/shop-portal` for customer portal
+   - Check `/shop-availability` for public shop listings
+
+4. **Verify Background Jobs:**
+   - Check that scheduler events are configured
+   - Test email notifications (if SMTP is configured)
 
 ## 🎨 Customization
 
@@ -328,10 +361,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🆘 Support
 
 ### Documentation
-- [User Guide](docs/user-guide.md)
-- [Administrator Guide](docs/admin-guide.md)
-- [API Documentation](docs/api.md)
-- [Troubleshooting](docs/troubleshooting.md)
+- **Installation Issues**: [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md)
+- **Hook Validator**: `python validate_hooks.py`
+- **User Guide**: Available in the app documentation
+- **API Documentation**: See API Reference section above
 
 ### Community Support
 - 📧 Email: nandhakishore2165@gmail.com
@@ -359,13 +392,25 @@ For enterprise support, custom development, and consultation services, please co
 - ✅ Email notification system
 - ✅ Lead management system
 - ✅ Beautiful responsive UI
+- ✅ **Installation issues fixed**
+- ✅ **Standalone compatibility**
 - 🔄 Mobile app (planned)
 - 🔄 Advanced reporting (planned)
 - 🔄 Multi-airport support (planned)
 
 ## 🚀 Recent Updates
 
-### Version 1.0.0 (Latest)
+### Version 2.0.0 (Latest - Fixed Installation Issues)
+- 🔧 **FIXED**: ERPNext dependency requirement (now optional)
+- 🔧 **FIXED**: 'dict' object has no attribute 'extend' error
+- 🔧 **FIXED**: Hook configuration validation
+- 🆕 **NEW**: Standalone installation support
+- 🆕 **NEW**: Comprehensive validation tools
+- 🆕 **NEW**: Installation troubleshooting guide
+- 🔧 **ENHANCED**: Compatibility with various Frappe configurations
+- 🔧 **ENHANCED**: Error handling and diagnostics
+
+### Version 1.0.0 (Previous)
 - **New**: Complete shop management system
 - **New**: Automated rent collection with invoicing
 - **New**: Public shop portal with online applications
@@ -381,3 +426,5 @@ For enterprise support, custom development, and consultation services, please co
 **Made with ❤️ for the aviation industry**
 
 *Transform your airport operations with this comprehensive management solution.*
+
+> 🔗 **Related Repository**: For basic airplane mode implementation, see [airport-automation](https://github.com/macrobian88/airport-automation)
