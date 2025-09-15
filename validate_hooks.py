@@ -48,7 +48,7 @@ def validate_hooks(hooks_path="airplane_mode/hooks.py"):
         'before_job',
         'after_job',
         'auth_hooks',
-        'standard_doctypes',
+        'standard_doctypes',  # This is the one causing the extend() error!
         'auto_cancel_exempted_doctypes',
         'ignore_links_on_delete',
         'user_data_fields',
@@ -60,7 +60,11 @@ def validate_hooks(hooks_path="airplane_mode/hooks.py"):
         'desk_pages',
         'standard_portal_menu_items',
         'onboard_steps',
-        'fixtures'
+        'fixtures',
+        'website_context_processors',
+        'boot_info',
+        'before_migrate',
+        'after_migrate'
     }
     
     # Define hooks that should be dicts
@@ -93,8 +97,14 @@ def validate_hooks(hooks_path="airplane_mode/hooks.py"):
         'website_route_rules'
     }
     
+    # CRITICAL: Hooks that commonly cause extend() errors
+    problematic_hooks = {
+        'standard_doctypes': ['Airport Shop', 'Shop Lead', 'Contract Shop'],
+    }
+    
     issues_found = []
     warnings = []
+    critical_issues = []
     
     # Check all attributes in the hooks module
     for attr_name in dir(hooks_module):
@@ -107,10 +117,22 @@ def validate_hooks(hooks_path="airplane_mode/hooks.py"):
         if inspect.isfunction(attr_value) or inspect.ismodule(attr_value):
             continue
         
+        # CRITICAL CHECK: Look for the specific problematic hook causing extend() error
+        if attr_name in problematic_hooks:
+            if attr_value == problematic_hooks[attr_name]:
+                critical_issues.append(f"🚨 CRITICAL: {attr_name} with value {attr_value} will cause 'dict' object extend() error")
+                critical_issues.append(f"    This exact configuration caused your installation failure!")
+                critical_issues.append(f"    SOLUTION: Comment out or remove the {attr_name} hook definition")
+            else:
+                print(f"✅ {attr_name} has safe value: {attr_value}")
+        
         # Check list hooks
         if attr_name in list_hooks:
             if not isinstance(attr_value, list):
-                issues_found.append(f"❌ {attr_name} should be a list, but is {type(attr_value).__name__}")
+                if attr_name == 'standard_doctypes':
+                    critical_issues.append(f"🚨 CRITICAL: {attr_name} should be a list, but is {type(attr_value).__name__} - this causes extend() errors!")
+                else:
+                    issues_found.append(f"❌ {attr_name} should be a list, but is {type(attr_value).__name__}")
             else:
                 print(f"✅ {attr_name} is correctly defined as list")
         
@@ -148,10 +170,25 @@ def validate_hooks(hooks_path="airplane_mode/hooks.py"):
         elif isinstance(hooks_module.boot_session, list):
             print(f"✅ boot_session is correctly defined as list")
     
+    # CRITICAL: Check if the problematic standard_doctypes hook is defined
+    if not hasattr(hooks_module, 'standard_doctypes'):
+        print(f"✅ standard_doctypes hook is NOT defined (good - prevents extend() errors)")
+    
     # Print results
     print("\n" + "="*60)
     print("🔧 AIRPORT MANAGEMENT SYSTEM - VALIDATION RESULTS")
     print("="*60)
+    
+    if critical_issues:
+        print("🚨 CRITICAL ISSUES FOUND:")
+        for issue in critical_issues:
+            print(f"  {issue}")
+        print()
+        print("🔧 IMMEDIATE ACTION REQUIRED:")
+        print("  1. Comment out or remove the 'standard_doctypes' hook")
+        print("  2. This hook is causing your 'dict' object extend() installation error")
+        print("  3. The app will work perfectly without this hook")
+        print()
     
     if warnings:
         print("⚠️  WARNINGS:")
@@ -184,6 +221,7 @@ def main():
     
     print("🔧 Airport Management System - Hooks Validator")
     print("🛫 Frappe Airplane Mode Application")
+    print("🚨 SPECIAL CHECK: 'dict' object extend() error detection")
     print("="*60)
     
     success = validate_hooks(hooks_path)
@@ -193,6 +231,10 @@ def main():
         print("📦 Install with: bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git")
     else:
         print("\n🚨 Please fix the issues above before installing the app.")
+        print("\n💡 If you're still getting 'dict' object extend() errors:")
+        print("   - Look for 'standard_doctypes' hook in your hooks.py")
+        print("   - Comment out or remove this line completely")
+        print("   - This hook is not required for the app to function")
     
     sys.exit(0 if success else 1)
 
