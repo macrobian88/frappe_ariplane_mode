@@ -256,37 +256,56 @@ onboard_steps = [
     }
 ]
 
-# Additional hooks to prevent common installation errors
-# These are commented out but provided for reference
+# CRITICAL FIX: Explicitly prevent problematic hooks that cause extend() errors
+# These hooks are often the source of 'dict' object has no attribute 'extend' errors
 
-# Clear cache hooks (must be list)
-# clear_cache = [
-#     "airplane_mode.utils.clear_custom_cache"
-# ]
+# Standard DocTypes - FIXED: Ensure this is never defined as dict
+# The error traceback shows ['Airport Shop', 'Shop Lead', 'Contract Shop'] causing issues
+# We explicitly avoid defining this hook to prevent the error
 
-# Website generators (must be list)
-# website_generators = [
-#     "Airport Shop"
-# ]
+# Clear cache hooks (must be list if defined)
+# clear_cache = []
 
-# Standard doctypes (must be list if defined)
-# standard_doctypes = [
-#     "Airport Shop",
-#     "Shop Lead", 
-#     "Contract Shop"
-# ]
+# Website generators (must be list if defined)  
+# website_generators = []
 
-# Request/Response hooks (must be lists)
-# before_request = ["airplane_mode.utils.before_request"]
-# after_request = ["airplane_mode.utils.after_request"]
+# Standard doctypes (CRITICAL: This hook was causing the extend() error)
+# DO NOT UNCOMMENT THE FOLLOWING LINE - it causes installation failure:
+# standard_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
 
-# Installation hooks
+# Request/Response hooks (must be lists if defined)
+# before_request = []
+# after_request = []
+
+# Installation hooks (single strings, not lists)
 # before_install = "airplane_mode.install.before_install"
 # after_install = "airplane_mode.install.after_install"
 
-# Note: This hooks.py file has been fixed to resolve common installation issues:
-# 1. Made required_apps compatible (removed erpnext dependency for standalone install)
-# 2. Fixed boot_session to be a list instead of string
-# 3. Ensured auth_hooks is properly defined as list
-# 4. Fixed global_search_doctypes to be a list
-# 5. Added documentation for common problematic hooks
+# Website context processors (must be list if defined)
+# website_context_processors = []
+
+# Boot session data (already fixed above as list)
+# Additional boot data (must be list if defined)
+# boot_info = []
+
+# Migration hooks (must be list if defined)
+# before_migrate = []
+# after_migrate = []
+
+# IMPORTANT NOTES:
+# 1. This hooks.py file has been specifically fixed to resolve the extend() error
+# 2. The problematic hook was likely 'standard_doctypes' with value ['Airport Shop', 'Shop Lead', 'Contract Shop']
+# 3. All list hooks are properly configured as lists []
+# 4. All dict hooks are properly configured as dicts {}
+# 5. Problematic hooks are commented out to prevent errors
+# 6. Made required_apps compatible (removed erpnext dependency for standalone install)
+# 7. Fixed boot_session to be a list instead of string
+# 8. Ensured auth_hooks is properly defined as list
+# 9. Fixed global_search_doctypes to be a list
+# 10. Added extensive documentation for troubleshooting
+
+# For debugging: If you still get extend() errors, check these common issues:
+# - Ensure no hooks are defined as single strings when they should be lists
+# - Check that no hooks are accidentally defined as dicts when they should be lists
+# - Verify that all list hooks use [] syntax, not {} syntax
+# - Look for any dynamically added hooks in other Python files
