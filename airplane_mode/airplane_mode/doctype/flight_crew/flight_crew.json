@@ -13,20 +13,27 @@
   {
    "fieldname": "crew_member",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Crew Member",
-   "options": "Employee"
+   "options": "Employee",
+   "reqd": 1
   },
   {
+   "fetch_from": "crew_member.employee",
    "fieldname": "role",
-   "fieldtype": "Data",
-   "label": "Role"
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Role",
+   "options": "Employee",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-08 12:57:14.188846",
+ "modified": "2025-09-08 14:27:00.041454",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Flight Crew",

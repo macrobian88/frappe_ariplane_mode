@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "{airline}-{#####}",
+ "autoname": "format:{airline}-{#####}",
  "creation": "2025-07-03 15:31:42.179114",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,6 +9,7 @@
   "column_break_daps",
   "model",
   "airline",
+  "column_break_mqwj",
   "capacity",
   "initial_audit_completed"
  ],
@@ -48,12 +49,16 @@
    "fieldtype": "Column Break",
    "mandatory_depends_on": "eval: frappe.user.has_role('Airport Authority Personnel')\n",
    "read_only_depends_on": "eval: frappe.user.has_role('Airport Authority Personnel')\n"
+  },
+  {
+   "fieldname": "column_break_mqwj",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-07 22:30:53.863789",
+ "modified": "2025-09-05 15:37:13.954275",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airplane",

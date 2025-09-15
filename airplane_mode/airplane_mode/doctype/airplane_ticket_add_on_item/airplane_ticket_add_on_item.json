@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "item",
+  "column_break_jbys",
   "amount"
  ],
  "fields": [
@@ -25,13 +26,17 @@
    "in_list_view": 1,
    "label": "Amount",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_jbys",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-04 12:41:59.519012",
+ "modified": "2025-09-01 15:37:04.454682",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airplane Ticket Add-on Item",

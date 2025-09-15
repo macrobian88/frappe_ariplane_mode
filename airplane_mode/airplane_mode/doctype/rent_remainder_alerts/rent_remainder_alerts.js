@@ -1,7 +1,7 @@
 // Copyright (c) 2025, nandhakishore and contributors
 // For license information, please see license.txt
 
-// frappe.ui.form.on("Rent Payment", {
+// frappe.ui.form.on("Rent_Remainder_Alerts", {
 // 	refresh(frm) {
 
 // 	},

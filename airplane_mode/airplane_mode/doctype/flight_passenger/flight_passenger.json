@@ -7,7 +7,9 @@
  "field_order": [
   "first_name",
   "last_name",
-  "date_of_birth"
+  "column_break_aoqp",
+  "date_of_birth",
+  "contact_number"
  ],
  "fields": [
   {
@@ -27,12 +29,22 @@
    "fieldtype": "Date",
    "label": "Date Of Birth",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_aoqp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Phone",
+   "label": "Contact Number",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-07 14:40:38.637293",
+ "modified": "2025-09-01 15:58:05.789984",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Flight Passenger",

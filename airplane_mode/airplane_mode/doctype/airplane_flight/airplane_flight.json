@@ -15,6 +15,7 @@
   "status",
   "source_airport",
   "destination_airport",
+  "column_break_ggxw",
   "source_airport_code",
   "destination_airport_code",
   "amended_from",
@@ -22,13 +23,15 @@
   "is_published",
   "airline",
   "capacity",
-  "flight_crew",
-  "gate_number"
+  "gate_number",
+  "crew_details_section",
+  "flight_crew"
  ],
  "fields": [
   {
    "fieldname": "section_break_qbnf",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Airplane Route Details"
   },
   {
    "fieldname": "airplane",
@@ -55,6 +58,7 @@
   {
    "fieldname": "duration",
    "fieldtype": "Duration",
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Duration",
    "reqd": 1
@@ -89,7 +93,7 @@
    "read_only": 1
   },
   {
-   "fetch_from": "source_airport.code",
+   "fetch_from": "destination_airport.code",
    "fieldname": "destination_airport_code",
    "fieldtype": "Data",
    "label": "Destination Airport Code",
@@ -121,24 +125,39 @@
    "fieldname": "airline",
    "fieldtype": "Data",
    "label": "Airline",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
+   "fetch_from": "airplane.capacity",
    "fieldname": "capacity",
    "fieldtype": "Int",
    "label": "Capacity",
+   "non_negative": 1,
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "flight_crew",
    "fieldtype": "Table",
    "label": "Flight Crew",
-   "options": "Flight Crew"
+   "options": "Flight Crew",
+   "reqd": 1
   },
   {
    "fieldname": "gate_number",
    "fieldtype": "Data",
-   "label": "Gate Number"
+   "label": "Gate Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ggxw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "crew_details_section",
+   "fieldtype": "Section Break",
+   "label": "Crew Details"
   }
  ],
  "grid_page_length": 50,
@@ -152,7 +171,7 @@
    "link_fieldname": "flight"
   }
  ],
- "modified": "2025-07-08 13:00:13.753188",
+ "modified": "2025-09-08 14:06:24.618151",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airplane Flight",
@@ -177,5 +196,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "airplane"
 }

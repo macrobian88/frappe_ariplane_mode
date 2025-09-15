@@ -1,14 +1,17 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "hash",
  "creation": "2025-07-08 14:54:23.090918",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "airport_shop_details_section",
   "shop_name",
   "shop_number",
   "airport",
   "shop_type",
+  "column_break_zhjw",
   "area_sq_feet",
   "rent_amount",
   "contract_end_date",
@@ -33,18 +36,22 @@
    "fieldname": "airport",
    "fieldtype": "Link",
    "label": "Airport",
-   "options": "Airport"
+   "options": "Airport",
+   "reqd": 1
   },
   {
    "fieldname": "shop_type",
    "fieldtype": "Link",
    "label": "Shop Type",
-   "options": "Shop Type"
+   "options": "Shop Type",
+   "reqd": 1
   },
   {
    "fieldname": "area_sq_feet",
    "fieldtype": "Float",
-   "label": "Area Sq Feet"
+   "label": "Area Sq Feet",
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "rent_amount",
@@ -62,15 +69,25 @@
    "fieldname": "is_occupied",
    "fieldtype": "Check",
    "label": "is Occupied"
+  },
+  {
+   "fieldname": "column_break_zhjw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "airport_shop_details_section",
+   "fieldtype": "Section Break",
+   "label": "AirPort Shop Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-08 14:58:23.257774",
+ "modified": "2025-09-02 13:01:19.775574",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airport Shop",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
@@ -89,5 +106,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "shop_name"
 }

@@ -5,21 +5,15 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tenant_name",
+  "tenant_details_section",
   "email",
   "shop",
+  "column_break_iscr",
   "contract_start_date",
   "contract_end_date",
   "customer"
  ],
  "fields": [
-  {
-   "fieldname": "tenant_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Tenant Name",
-   "reqd": 1
-  },
   {
    "fieldname": "email",
    "fieldtype": "Data",
@@ -30,30 +24,43 @@
   {
    "fieldname": "shop",
    "fieldtype": "Link",
-   "label": "shop",
-   "options": "Airport Shop"
+   "label": "Shop Type",
+   "options": "Airport Shop",
+   "reqd": 1
   },
   {
    "fieldname": "contract_start_date",
-   "fieldtype": "Data",
-   "label": "Contract Start Date"
+   "fieldtype": "Date",
+   "label": "Contract Start Date",
+   "reqd": 1
   },
   {
    "fieldname": "contract_end_date",
-   "fieldtype": "Data",
-   "label": "Contract End Date"
+   "fieldtype": "Date",
+   "label": "Contract End Date",
+   "reqd": 1
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
-   "label": "customer",
-   "options": "Customer"
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iscr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tenant_details_section",
+   "fieldtype": "Section Break",
+   "label": "Tenant Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-08 13:18:31.179436",
+ "modified": "2025-09-10 09:26:42.199553",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Tenant",
@@ -75,5 +82,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "customer"
 }

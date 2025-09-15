@@ -10,11 +10,13 @@
   "departure_details_column",
   "passenger",
   "source_airport_code",
+  "column_break_hpvv",
   "amended_from",
   "dearture_details_section",
   "destination_airport_code",
   "flight",
   "duration_of_flight",
+  "column_break_uiwp",
   "departure_date",
   "departure_time",
   "destination_airport",
@@ -150,13 +152,21 @@
    "fieldname": "gate_number",
    "fieldtype": "Data",
    "label": "Gate Number"
+  },
+  {
+   "fieldname": "column_break_hpvv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uiwp",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-08 13:00:31.178129",
+ "modified": "2025-09-01 15:35:57.923855",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airplane Ticket",
