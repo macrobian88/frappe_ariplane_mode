@@ -1,270 +1,253 @@
 app_name = "airplane_mode"
-app_title = "Airplane Mode"
+app_title = "Airport Management System"
 app_publisher = "nandhakishore"
-app_description = "day1 assignment"
-app_email = "nandhakihsorel2165@gmail.com"
+app_description = "Comprehensive Airport Management System with Flight Operations, Shop Management, and Rent Collection"
+app_email = "nandhakishore2165@gmail.com"
 app_license = "mit"
+required_apps = ["frappe", "erpnext"]
 
 # Apps
-# ------------------
-
-# required_apps = []
-
-# Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "airplane_mode",
-# 		"logo": "/assets/airplane_mode/logo.png",
-# 		"title": "Airplane Mode",
-# 		"route": "/airplane_mode",
-# 		"has_permission": "airplane_mode.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+    {
+        "name": "airplane_mode",
+        "logo": "/assets/airplane_mode/logo.png",
+        "title": "Airport Management",
+        "route": "/airplane_mode",
+        "has_permission": "airplane_mode.api.permission.has_app_permission"
+    }
+]
 
 # Includes in <head>
-# ------------------
-
-# include js, css files in header of desk.html
-# app_include_css = "/assets/airplane_mode/css/airplane_mode.css"
-# app_include_js = "/assets/airplane_mode/js/airplane_mode.js"
-
-# include js, css files in header of web template
-# web_include_css = "/assets/airplane_mode/css/airplane_mode.css"
-# web_include_js = "/assets/airplane_mode/js/airplane_mode.js"
-
-# include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "airplane_mode/public/scss/website"
-
-# include js, css files in header of web form
-# webform_include_js = {"doctype": "public/js/doctype.js"}
-# webform_include_css = {"doctype": "public/css/doctype.css"}
-
-# include js in page
-# page_js = {"page" : "public/js/file.js"}
+app_include_css = "/assets/airplane_mode/css/airplane_mode.css"
+app_include_js = "/assets/airplane_mode/js/airplane_mode.js"
+web_include_css = "/assets/airplane_mode/css/web.css"
+web_include_js = "/assets/airplane_mode/js/web.js"
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
-
-# Svg Icons
-# ------------------
-# include app icons in desk
-# app_include_icons = "airplane_mode/public/icons.svg"
-
-# Home Pages
-# ----------
-
-# application home page (will override Website Settings)
-# home_page = "login"
-
-# website user home page (by Role)
-# role_home_page = {
-# 	"Role": "home_page"
-# }
-
-# Generators
-# ----------
-
-# automatically create page for each record of this doctype
-# website_generators = ["Web Page"]
-
-# Jinja
-# ----------
-
-# add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "airplane_mode.utils.jinja_methods",
-# 	"filters": "airplane_mode.utils.jinja_filters"
-# }
-
-# Installation
-# ------------
-
-# before_install = "airplane_mode.install.before_install"
-# after_install = "airplane_mode.install.after_install"
-
-# Uninstallation
-# ------------
-
-# before_uninstall = "airplane_mode.uninstall.before_uninstall"
-# after_uninstall = "airplane_mode.uninstall.after_uninstall"
-
-# Integration Setup
-# ------------------
-# To set up dependencies/integrations with other apps
-# Name of the app being installed is passed as an argument
-
-# before_app_install = "airplane_mode.utils.before_app_install"
-# after_app_install = "airplane_mode.utils.after_app_install"
-
-# Integration Cleanup
-# -------------------
-# To clean up dependencies/integrations with other apps
-# Name of the app being uninstalled is passed as an argument
-
-# before_app_uninstall = "airplane_mode.utils.before_app_uninstall"
-# after_app_uninstall = "airplane_mode.utils.after_app_uninstall"
-
-# Desk Notifications
-# ------------------
-# See frappe.core.notifications.get_notification_config
-
-# notification_config = "airplane_mode.notifications.get_notification_config"
-
-# Permissions
-# -----------
-# Permissions evaluated in scripted ways
-
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
-
-# DocType Class
-# ---------------
-# Override standard doctype classes
-
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+doctype_js = {
+    "Airplane Flight": "public/js/airplane_flight.js",
+    "Airport Shop": "public/js/airport_shop.js",
+    "Contract Shop": "public/js/contract_shop.js",
+    "Shop Lead": "public/js/shop_lead.js"
+}
 
 # Document Events
-# ---------------
-# Hook on document methods and events
-
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Airplane Flight": {
+        "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.sync_gate_to_tickets"
+    },
+    "Contract Shop": {
+        "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice",
+        "validate": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.validate_contract"
+    },
+    "Sales Invoice": {
+        "on_update": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
+    },
+    "Payment Entry": {
+        "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
+    },
+    "Shop Lead": {
+        "after_insert": "airplane_mode.airport_shop_management.lead_notifications.send_lead_notifications"
+    }
+}
 
 # Scheduled Tasks
-# ---------------
+scheduler_events = {
+    "daily": [
+        "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders",
+        "airplane_mode.airport_shop_management.rent_collection.process_monthly_invoices"
+    ],
+    "weekly": [
+        "airplane_mode.airplane_mode.report_automation.send_weekly_reports"
+    ],
+    "monthly": [
+        "airplane_mode.airport_shop_management.analytics.update_monthly_metrics"
+    ]
+}
 
-# scheduler_events = {
-# 	"all": [
-# 		"airplane_mode.tasks.all"
-# 	],
-# 	"daily": [
-# 		"airplane_mode.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"airplane_mode.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"airplane_mode.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"airplane_mode.tasks.monthly"
-# 	],
-# }
+# Website Routes
+website_route_rules = [
+    {"from_route": "/shop-portal", "to_route": "Airport Shop Portal"},
+    {"from_route": "/shop-availability", "to_route": "Shop Availability"},
+    {"from_route": "/apply-shop", "to_route": "Shop Application"}
+]
 
-# Testing
-# -------
+# Fixtures
+fixtures = [
+    {
+        "dt": "Shop Type",
+        "filters": [["shop_type_name", "in", ["Stall", "Walk-through", "Normal", "Food Court", "Duty Free"]]]
+    },
+    {
+        "dt": "Airport",
+        "filters": [["name", "in", ["Bangalore International Airport", "Chennai International Airport"]]]
+    }
+]
 
-# before_tests = "airplane_mode.install.before_tests"
+# Permissions
+permission_query_conditions = {
+    "Airport Shop": "airplane_mode.airplane_mode.doctype.airport_shop.airport_shop.get_permission_query_conditions",
+    "Contract Shop": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.get_permission_query_conditions"
+}
 
-# Overriding Methods
-# ------------------------------
-#
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "airplane_mode.event.get_events"
-# }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "airplane_mode.task.get_dashboard_data"
-# }
+has_permission = {
+    "Airport Shop": "airplane_mode.airplane_mode.doctype.airport_shop.airport_shop.has_permission",
+    "Contract Shop": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.has_permission"
+}
 
-# exempt linked doctypes from being automatically cancelled
-#
-# auto_cancel_exempted_doctypes = ["Auto Repeat"]
+# Jinja Methods
+jinja = {
+    "methods": "airplane_mode.utils.jinja_methods",
+    "filters": "airplane_mode.utils.jinja_filters"
+}
 
-# Ignore links to specified DocTypes when deleting documents
-# -----------------------------------------------------------
+# Background Jobs
+job_events = {
+    "before_job": ["airplane_mode.utils.before_job"],
+    "after_job": ["airplane_mode.utils.after_job"]
+}
 
-# ignore_links_on_delete = ["Communication", "ToDo"]
-
-# Request Events
-# ----------------
-# before_request = ["airplane_mode.utils.before_request"]
-# after_request = ["airplane_mode.utils.after_request"]
-
-# Job Events
-# ----------
-# before_job = ["airplane_mode.utils.before_job"]
-# after_job = ["airplane_mode.utils.after_job"]
+# Boot Session
+boot_session = "airplane_mode.utils.boot_session"
 
 # User Data Protection
-# --------------------
+user_data_fields = [
+    {
+        "doctype": "Shop Lead",
+        "filter_by": "email",
+        "redact_fields": ["lead_name", "phone", "email"],
+        "partial": 1,
+    }
+]
 
-# user_data_fields = [
-# 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_3}",
-# 		"strict": False,
-# 	},
-# 	{
-# 		"doctype": "{doctype_4}"
-# 	}
-# ]
+# Export Python Type Annotations
+export_python_type_annotations = True
 
-# Authentication and authorization
-# --------------------------------
+# Default Log Clearing
+default_log_clearing_doctypes = {
+    "Shop Lead": 90,  # 3 months
+    "Contract Shop": 365  # 1 year
+}
 
-# auth_hooks = [
-# 	"airplane_mode.auth.validate"
-# ]
+# Website Theme
+website_theme_scss = "airplane_mode/public/scss/website"
 
-# Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
+# Error Pages
+error_page_templates = {
+    "404": "templates/pages/404.html",
+    "500": "templates/pages/500.html"
+}
 
-# default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
-# }
-# doc_events = {
-#     # "Airplane Flight": {
-#     #     "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.sync_gate_to_tickets"
-#     # },
-#     "contract_shop": {
-#         "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice"
-#     },
-#     "Sales Invoice": {
-#         "on_update": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
-#     },
-#     "Payment Entry": {
-#         "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
-#     }
-# }
+# Email Templates
+standard_email_templates = [
+    {
+        "name": "Shop Lead Welcome",
+        "subject": "Thank you for your interest in our Airport Shops",
+        "response": "airplane_mode/templates/emails/shop_lead_welcome.html"
+    },
+    {
+        "name": "Rent Reminder",
+        "subject": "Monthly Rent Due Reminder",
+        "response": "airplane_mode/templates/emails/rent_reminder.html"
+    },
+    {
+        "name": "Contract Renewal",
+        "subject": "Shop Contract Renewal Notice",
+        "response": "airplane_mode/templates/emails/contract_renewal.html"
+    }
+]
 
-# scheduler_events = {
-#     "daily": [
-#         "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders"
-#     ]
-# }
-# fixtures = [
-#     {
-#         "dt": "Shop Type",
-#         "filters": [["shop_type_name", "in", ["Stall", "Walk-through", "Normal"]]]
-#     }
-# ]
+# Website Context
+website_context = {
+    "favicon": "/assets/airplane_mode/images/favicon.ico",
+    "splash_image": "/assets/airplane_mode/images/splash.png"
+}
 
+# Auto Email Reports
+auto_email_reports = [
+    {
+        "report": "Shop Occupancy Report",
+        "email_to": ["admin@airport.com"],
+        "frequency": "Weekly",
+        "format": "PDF"
+    },
+    {
+        "report": "Revenue Analytics",
+        "email_to": ["finance@airport.com"],
+        "frequency": "Monthly", 
+        "format": "Excel"
+    }
+]
+
+# Notification Config
+notification_config = "airplane_mode.notifications.get_notification_config"
+
+# Override Standard Pages
+override_standard_pages = {
+    "home": "airplane_mode.www.index"
+}
+
+# Custom Authentication
+auth_hooks = [
+    "airplane_mode.auth.validate_user_permissions"
+]
+
+# Global Search
+global_search_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
+
+# Dashboard Charts
+dashboard_charts = [
+    {
+        "chart_name": "Shop Occupancy",
+        "chart_type": "donut",
+        "timeseries": 0,
+        "based_on": "shop_type",
+        "value_based_on": "count"
+    },
+    {
+        "chart_name": "Monthly Revenue",
+        "chart_type": "line", 
+        "timeseries": 1,
+        "based_on": "posting_date",
+        "value_based_on": "grand_total"
+    }
+]
+
+# Desk Page
+desk_pages = [
+    {
+        "module": "Airport Shop Management",
+        "category": "Places",
+        "label": "Shop Portal",
+        "route": "/shop-portal"
+    }
+]
+
+# Standard Portal Doctypes
+standard_portal_menu_items = [
+    {"title": "Shop Applications", "route": "/shop-applications", "reference_doctype": "Shop Lead", "role": "Customer"},
+    {"title": "My Contracts", "route": "/my-contracts", "reference_doctype": "Contract Shop", "role": "Customer"},
+    {"title": "Invoices", "route": "/invoices", "reference_doctype": "Sales Invoice", "role": "Customer"}
+]
+
+# OnBoard Steps
+onboard_steps = [
+    {
+        "step": "Create Shop Types",
+        "description": "Set up different categories of shops in your airport",
+        "action": "Create Shop Type",
+        "action_label": "Create Shop Type"
+    },
+    {
+        "step": "Add Airport Shops", 
+        "description": "Register available shops for lease",
+        "action": "Create Airport Shop",
+        "action_label": "Add Shop"
+    },
+    {
+        "step": "Configure Email Settings",
+        "description": "Set up email notifications for leads and contracts",
+        "action": "Setup Email",
+        "action_label": "Configure Email"
+    }
+]
