@@ -1,0 +1,306 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Apply for Shop") }}{% endblock %}
+
+{% block content %}
+<div class="bg-success text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-2">{{ _("Apply for Shop") }}</h1>
+                <p class="lead mb-0">{{ _("Start your business journey at our premium airport location") }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    
+    {% if success_message %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ success_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% elif error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+
+    {% if selected_shop %}
+    <!-- Selected Shop Info -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">{{ _("Selected Shop") }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-success">{{ selected_shop.shop_name }}</h6>
+                            <p class="mb-1"><strong>{{ _("Type") }}:</strong> {{ selected_shop.shop_type }}</p>
+                            <p class="mb-1"><strong>{{ _("Area") }}:</strong> {{ selected_shop.area }} sqft</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>{{ _("Location") }}:</strong> {{ selected_shop.location or _("Airport Terminal") }}</p>
+                            <p class="mb-1"><strong>{{ _("Monthly Rent") }}:</strong> <span class="text-success">₹{{ "{:,}".format(selected_shop.rent_per_month or 0) }}</span></p>
+                        </div>
+                    </div>
+                    {% if selected_shop.description %}
+                    <p class="mt-2 text-muted">{{ selected_shop.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Application Form -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ _("Shop Application Form") }}</h4>
+                </div>
+                <div class="card-body">
+                    <form id="shopApplicationForm" method="POST">
+                        
+                        <!-- Personal Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2">{{ _("Personal Information") }}</h5>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">{{ _("Full Name") }} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">{{ _("Email Address") }} <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">{{ _("Phone Number") }} <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="company_name" class="form-label">{{ _("Company/Business Name") }}</label>
+                                <input type="text" class="form-control" id="company_name" name="company_name">
+                            </div>
+                        </div>
+
+                        <!-- Shop Preferences -->
+                        <div class="row mb-4 mt-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2">{{ _("Shop Preferences") }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="preferred_shop" class="form-label">{{ _("Preferred Shop") }}</label>
+                                <select class="form-select" id="preferred_shop" name="preferred_shop">
+                                    <option value="any">{{ _("Any Available Shop") }}</option>
+                                    {% for shop in available_shops %}
+                                    <option value="{{ shop.name }}" 
+                                        {% if selected_shop and selected_shop.name == shop.name %}selected{% endif %}>
+                                        {{ shop.shop_name }} ({{ shop.shop_type }}, {{ shop.area }} sqft, ₹{{ "{:,}".format(shop.rent_per_month or 0) }}/month)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="preferred_shop_type" class="form-label">{{ _("Preferred Shop Type") }}</label>
+                                <select class="form-select" id="preferred_shop_type" name="preferred_shop_type">
+                                    <option value="">{{ _("Select Shop Type") }}</option>
+                                    {% for shop_type in shop_types %}
+                                    <option value="{{ shop_type.name }}"
+                                        {% if selected_shop and selected_shop.shop_type == shop_type.name %}selected{% endif %}>
+                                        {{ shop_type.shop_type_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="budget_range" class="form-label">{{ _("Budget Range (Monthly)") }}</label>
+                                <select class="form-select" id="budget_range" name="budget_range">
+                                    <option value="">{{ _("Select Budget Range") }}</option>
+                                    <option value="Under 50000">{{ _("Under ₹50,000") }}</option>
+                                    <option value="50000-100000">₹50,000 - ₹1,00,000</option>
+                                    <option value="100000-200000">₹1,00,000 - ₹2,00,000</option>
+                                    <option value="200000-500000">₹2,00,000 - ₹5,00,000</option>
+                                    <option value="Above 500000">{{ _("Above ₹5,00,000") }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Business Information -->
+                        <div class="row mb-4 mt-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2">{{ _("Business Information") }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="business_type" class="form-label">{{ _("Business Type") }} <span class="text-danger">*</span></label>
+                                <select class="form-select" id="business_type" name="business_type" required>
+                                    <option value="">{{ _("Select Business Type") }}</option>
+                                    <option value="Retail">{{ _("Retail Store") }}</option>
+                                    <option value="Food & Beverage">{{ _("Food & Beverage") }}</option>
+                                    <option value="Electronics">{{ _("Electronics") }}</option>
+                                    <option value="Fashion">{{ _("Fashion & Accessories") }}</option>
+                                    <option value="Books & Gifts">{{ _("Books & Gifts") }}</option>
+                                    <option value="Services">{{ _("Services") }}</option>
+                                    <option value="Other">{{ _("Other") }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="experience_years" class="form-label">{{ _("Business Experience (Years)") }}</label>
+                                <input type="number" class="form-control" id="experience_years" name="experience_years" min="0" max="50">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="business_description" class="form-label">{{ _("Business Description") }}</label>
+                            <textarea class="form-control" id="business_description" name="business_description" rows="3" 
+                                      placeholder="{{ _('Describe your business, products/services, and why you want to operate at the airport') }}"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="additional_notes" class="form-label">{{ _("Additional Notes") }}</label>
+                            <textarea class="form-control" id="additional_notes" name="additional_notes" rows="2" 
+                                      placeholder="{{ _('Any special requirements or additional information') }}"></textarea>
+                        </div>
+
+                        <!-- Terms and Submit -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms_agreed" name="terms_agreed" required>
+                                <label class="form-check-label" for="terms_agreed">
+                                    {{ _("I agree to the terms and conditions and understand that this is an application and not a guarantee of shop rental") }} <span class="text-danger">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" name="submit_application" value="1" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>{{ _("Submit Application") }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- What Happens Next Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h3>{{ _("What Happens Next?") }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="fas fa-paper-plane fa-3x text-primary mb-3"></i>
+                        <h5>{{ _("1. Application Review") }}</h5>
+                        <p class="text-muted">{{ _("We'll review your application within 2-3 business days") }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="fas fa-phone fa-3x text-success mb-3"></i>
+                        <h5>{{ _("2. Contact & Discussion") }}</h5>
+                        <p class="text-muted">{{ _("Our team will contact you to discuss details and next steps") }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="fas fa-handshake fa-3x text-warning mb-3"></i>
+                        <h5>{{ _("3. Agreement & Setup") }}</h5>
+                        <p class="text-muted">{{ _("Complete the rental agreement and start your business") }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-label {
+    font-weight: 500;
+}
+
+.text-danger {
+    font-size: 0.9em;
+}
+
+.card {
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.border-bottom {
+    border-bottom: 2px solid #dee2e6 !important;
+}
+</style>
+
+<script>
+// Form validation and enhancement
+document.getElementById('shopApplicationForm').addEventListener('submit', function(e) {
+    // Basic client-side validation
+    const requiredFields = ['full_name', 'email', 'phone', 'business_type'];
+    let isValid = true;
+    
+    requiredFields.forEach(function(field) {
+        const input = document.getElementById(field);
+        if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!document.getElementById('terms_agreed').checked) {
+        alert('{{ _("Please agree to the terms and conditions") }}');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('{{ _("Please fill all required fields") }}');
+    }
+});
+
+// Real-time validation feedback
+document.querySelectorAll('input[required], select[required]').forEach(function(input) {
+    input.addEventListener('blur', function() {
+        if (this.value.trim()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        }
+    });
+});
+</script>
+{% endblock %}
