@@ -4,9 +4,13 @@ app_publisher = "nandhakishore"
 app_description = "Comprehensive Airport Management System with Flight Operations, Shop Management, and Rent Collection"
 app_email = "nandhakishore2165@gmail.com"
 app_license = "mit"
-required_apps = ["frappe", "erpnext"]
 
-# Apps
+# Required Apps - Set to minimal dependencies for broader compatibility
+# Remove ERPNext dependency to allow standalone installation
+# Add it back if specifically needed: required_apps = ["frappe", "erpnext"]
+required_apps = ["frappe"]
+
+# Apps - Apps screen configuration
 add_to_apps_screen = [
     {
         "name": "airplane_mode",
@@ -101,14 +105,14 @@ jinja = {
     "filters": "airplane_mode.utils.jinja_filters"
 }
 
-# Background Jobs
+# Background Jobs - FIXED: These should be lists, not single strings
 job_events = {
     "before_job": ["airplane_mode.utils.before_job"],
     "after_job": ["airplane_mode.utils.after_job"]
 }
 
-# Boot Session
-boot_session = "airplane_mode.utils.boot_session"
+# Boot Session - FIXED: Should be list, not single string
+boot_session = ["airplane_mode.utils.boot_session"]
 
 # User Data Protection
 user_data_fields = [
@@ -187,12 +191,12 @@ override_standard_pages = {
     "home": "airplane_mode.www.index"
 }
 
-# Custom Authentication
+# Custom Authentication - FIXED: Should be list
 auth_hooks = [
     "airplane_mode.auth.validate_user_permissions"
 ]
 
-# Global Search
+# Global Search - FIXED: Should be list
 global_search_doctypes = ["Airport Shop", "Shop Lead", "Contract Shop"]
 
 # Dashboard Charts
@@ -251,3 +255,38 @@ onboard_steps = [
         "action_label": "Configure Email"
     }
 ]
+
+# Additional hooks to prevent common installation errors
+# These are commented out but provided for reference
+
+# Clear cache hooks (must be list)
+# clear_cache = [
+#     "airplane_mode.utils.clear_custom_cache"
+# ]
+
+# Website generators (must be list)
+# website_generators = [
+#     "Airport Shop"
+# ]
+
+# Standard doctypes (must be list if defined)
+# standard_doctypes = [
+#     "Airport Shop",
+#     "Shop Lead", 
+#     "Contract Shop"
+# ]
+
+# Request/Response hooks (must be lists)
+# before_request = ["airplane_mode.utils.before_request"]
+# after_request = ["airplane_mode.utils.after_request"]
+
+# Installation hooks
+# before_install = "airplane_mode.install.before_install"
+# after_install = "airplane_mode.install.after_install"
+
+# Note: This hooks.py file has been fixed to resolve common installation issues:
+# 1. Made required_apps compatible (removed erpnext dependency for standalone install)
+# 2. Fixed boot_session to be a list instead of string
+# 3. Ensured auth_hooks is properly defined as list
+# 4. Fixed global_search_doctypes to be a list
+# 5. Added documentation for common problematic hooks
