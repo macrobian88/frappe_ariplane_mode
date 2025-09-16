@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "name": "Airplane Mode API Collection",
+    "type": "collection",
+    "version": "1.0.0"
+  },
+  "folders": [
+    {
+      "name": "Shop Management",
+      "items": [
+        {
+          "name": "Get All Shops",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/method/airplane_mode.api.shop_api.get_shops_list",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "docs": "Retrieve list of all shops with complete details including shop number, name, type, area, rent amount, occupancy status, tenant information, airport location, and timestamps."
+        },
+        {
+          "name": "Create New Shop",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/method/airplane_mode.api.shop_api.create_shop",
+            "headers": [
+              {
+                "name": "Authorization", 
+                "value": "token {{api_key}}:{{api_secret}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "raw": {
+                "shop_number": "SHOP-API-001",
+                "shop_name": "API Test Shop",
+                "shop_type": "Normal",
+                "area_sqft": 250,
+                "airport": "Mumbai International Airport",
+                "rent_amount": 15000,
+                "location_description": "Terminal 2, Level 1, Near Gate B15",
+                "tenant": ""
+              }
+            }
+          },
+          "docs": "Create a new airport shop. Required fields: shop_number, shop_name, shop_type, area_sqft, airport. Optional: rent_amount, location_description, tenant."
+        },
+        {
+          "name": "Get Shop Details",
+          "request": {
+            "method": "GET", 
+            "url": "{{base_url}}/api/method/airplane_mode.api.shop_api.get_shop_details?shop_id=SHOP-API-001",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              }
+            ]
+          },
+          "docs": "Get detailed information for a specific shop including contracts and tenant history."
+        },
+        {
+          "name": "Get Shop Types",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/method/airplane_mode.api.shop_api.get_shop_types", 
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              }
+            ]
+          },
+          "docs": "Retrieve all enabled shop types (Stall, Walk-through, Normal, etc.)"
+        },
+        {
+          "name": "Get Airport Analytics",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/method/airplane_mode.api.shop_api.get_airport_analytics?airport=Mumbai International Airport",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              }
+            ]
+          },
+          "docs": "Get analytics including total shops, occupancy rates, and shop type distribution for a specific airport or all airports."
+        }
+      ]
+    },
+    {
+      "name": "Standard Frappe APIs",
+      "items": [
+        {
+          "name": "Get Airport Shop List (Standard)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/resource/Airport Shop",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              }
+            ]
+          },
+          "docs": "Standard Frappe REST API to list Airport Shop documents with default fields."
+        },
+        {
+          "name": "Create Airport Shop (Standard)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/resource/Airport Shop",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              },
+              {
+                "name": "Content-Type", 
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "raw": {
+                "shop_number": "SHOP-STD-001",
+                "shop_name": "Standard API Shop",
+                "shop_type": "Normal",
+                "area_sqft": 300,
+                "airport": "Mumbai International Airport",
+                "rent_amount": 18000
+              }
+            }
+          },
+          "docs": "Standard Frappe REST API to create Airport Shop document."
+        },
+        {
+          "name": "Get Specific Shop (Standard)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/resource/Airport Shop/SHOP-STD-001",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "token {{api_key}}:{{api_secret}}"
+              }
+            ]
+          },
+          "docs": "Standard Frappe REST API to get a specific Airport Shop document."
+        }
+      ]
+    }
+  ],
+  "environments": [
+    {
+      "name": "Local Development",
+      "variables": [
+        {
+          "name": "base_url",
+          "value": "http://localhost:8000"
+        },
+        {
+          "name": "api_key", 
+          "value": "your_api_key_here"
+        },
+        {
+          "name": "api_secret",
+          "value": "your_api_secret_here"
+        }
+      ]
+    },
+    {
+      "name": "Frappe Cloud",
+      "variables": [
+        {
+          "name": "base_url",
+          "value": "https://airplane-mode.m.frappe.cloud"
+        },
+        {
+          "name": "api_key",
+          "value": "your_cloud_api_key"
+        },
+        {
+          "name": "api_secret",
+          "value": "your_cloud_api_secret"
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": "{{api_key}}:{{api_secret}}"
+  }
+}
