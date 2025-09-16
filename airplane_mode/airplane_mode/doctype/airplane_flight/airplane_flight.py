@@ -15,11 +15,19 @@ class AirplaneFlight(WebsiteGenerator):
     def on_submit(self):
         self.db_set("status", "Completed")
 
+    def after_insert(self):
+        """Calculate occupancy after insertion."""
+        self.calculate_occupancy()
+
     def on_update(self):
         """
         Automatically update ticket gate numbers when the flight gate changes.
         Works for both Draft and Submitted flights.
+        Also recalculate occupancy on update.
         """
+        # Calculate occupancy
+        self.calculate_occupancy()
+        
         if hasattr(self, '_previous_gate_number'):
             # Only update if gate number actually changed
             if self._previous_gate_number != self.gate_number:
@@ -28,6 +36,33 @@ class AirplaneFlight(WebsiteGenerator):
             # First time or when gate number is set
             if self.gate_number:
                 self.sync_gate_to_tickets()
+
+    def calculate_occupancy(self):
+        """Calculate current occupancy based on booked tickets."""
+        if not self.name:
+            return
+        
+        # Count tickets for this flight
+        booked_tickets = frappe.db.count(
+            "Airplane Ticket",
+            filters={
+                "flight": self.name,
+                "docstatus": ["!=", 2]  # Don't count cancelled tickets
+            }
+        )
+        
+        # Calculate occupancy percentage
+        occupancy_count = booked_tickets
+        occupancy_percentage = 0
+        
+        if self.capacity and self.capacity > 0:
+            occupancy_percentage = round((booked_tickets / self.capacity) * 100, 2)
+        
+        # Update the document directly in database to avoid recursion
+        frappe.db.set_value("Airplane Flight", self.name, {
+            "occupancy_count": occupancy_count,
+            "occupancy_percentage": occupancy_percentage
+        }, update_modified=False)
 
     def sync_gate_to_tickets(self):
         """Update all tickets when flight's gate changes."""
@@ -92,6 +127,21 @@ def update_gate_number_for_flight(flight_name, gate_number, batch_size=100, upda
 
     frappe.logger().info(f"[GateSync] Completed update for flight={flight_name}. Total tickets updated: {total_updated}")
 
+@frappe.whitelist()
+def recalculate_all_flight_occupancy():
+    """
+    Utility function to recalculate occupancy for all flights.
+    Can be called manually when needed.
+    """
+    flights = frappe.get_all("Airplane Flight", fields=["name"])
+    
+    for flight in flights:
+        flight_doc = frappe.get_doc("Airplane Flight", flight.name)
+        flight_doc.calculate_occupancy()
+    
+    frappe.db.commit()
+    return f"Updated occupancy for {len(flights)} flights"
+
 def sync_gate_to_tickets(doc, method=None):
     """
     Hook function called from doc_events in hooks.py
@@ -115,3 +165,15 @@ def sync_gate_to_tickets(doc, method=None):
         queue="default",
         timeout=300
     )
+
+def update_flight_occupancy(doc, method=None):
+    """
+    Hook function to update flight occupancy when tickets are created/updated/cancelled.
+    This should be called from Airplane Ticket hooks.
+    """
+    if hasattr(doc, 'flight') and doc.flight:
+        try:
+            flight_doc = frappe.get_doc("Airplane Flight", doc.flight)
+            flight_doc.calculate_occupancy()
+        except Exception as e:
+            frappe.log_error(f"Error updating flight occupancy: {e}")
