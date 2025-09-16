@@ -1,0 +1,55 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2025-09-16 18:00:00.000000",
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "airport",
+   "fieldtype": "Link",
+   "label": "Airport",
+   "options": "Airport",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "shop_type",
+   "fieldtype": "Link",
+   "label": "Shop Type",
+   "options": "Shop Type",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "terminal",
+   "fieldtype": "Data",
+   "label": "Terminal",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nActive\nInactive\nUnder Maintenance\nUnder Construction",
+   "wildcard_filter": 0
+  }
+ ],
+ "is_standard": "Yes",
+ "letter_head": "",
+ "modified": "2025-09-16 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Airplane Mode",
+ "name": "Airport Shop Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "",
+ "ref_doctype": "Airport Shop",
+ "report_name": "Airport Shop Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Airport Manager"
+  }
+ ]
+}
