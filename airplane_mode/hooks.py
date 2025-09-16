@@ -38,6 +38,12 @@ doc_events = {
     "Airplane Flight": {
         "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.sync_gate_to_tickets"
     },
+    "Airplane Ticket": {
+        "after_insert": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_flight_occupancy",
+        "on_update": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_flight_occupancy",
+        "on_cancel": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_flight_occupancy",
+        "on_trash": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_flight_occupancy"
+    },
     "Contract Shop": {
         "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice",
         "validate": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.validate_contract"
@@ -57,7 +63,8 @@ doc_events = {
 scheduler_events = {
     "daily": [
         "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders",
-        "airplane_mode.airport_shop_management.rent_collection.process_monthly_invoices"
+        "airplane_mode.airport_shop_management.rent_collection.process_monthly_invoices",
+        "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.recalculate_all_flight_occupancy"
     ],
     "weekly": [
         "airplane_mode.airplane_mode.report_automation.send_weekly_reports"
@@ -241,8 +248,7 @@ onboard_steps = [
 ]
 
 # NOTES:
-# 1. Removed all problematic hooks that could cause the 'extend' error
-# 2. Fixed boot_session to be a single string instead of list (Frappe v13+ format)
-# 3. Removed job_events, auth_hooks, and global_search_doctypes that were causing issues
-# 4. All remaining hooks follow proper Frappe conventions
-# 5. This should resolve the migration error completely
+# 1. Added hooks for Airplane Ticket to update flight occupancy when tickets are created/updated/cancelled
+# 2. Added daily scheduled task to recalculate all flight occupancy
+# 3. This ensures occupancy is always accurate and up-to-date
+# 4. All hooks follow proper Frappe conventions
