@@ -1,430 +1,369 @@
-# Airport Management System 🛩️
+# 🚁 Airplane Mode - Airport Management System
 
-> ⚠️ **Installation Issues Fixed!** This version resolves critical installation dependencies and hook configuration problems. See [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md) for details.
+> ✨ **Latest Update**: Added comprehensive Airport Shop Management workspace with demo data and enhanced permissions system!
 
-A comprehensive Frappe application for managing airport operations including flight management, passenger services, crew assignment, and shop management with automated rent collection.
+A comprehensive Frappe application for managing airport operations including flight management, passenger services, crew assignment, and advanced shop management with automated rent collection and analytics.
 
-## 🚨 Recent Fixes
+## 🌟 New Features & Updates
 
-### ✅ Installation Issues Resolved
-- **Fixed**: ERPNext dependency requirement (now optional)
-- **Fixed**: 'dict' object has no attribute 'extend' error
-- **Fixed**: Hook configuration issues
-- **Added**: Standalone installation support
-- **Added**: Comprehensive validation tools
+### 🏪 Airport Shop Management Workspace
+- **Real-time Dashboard**: Live occupancy, revenue, and tenant metrics
+- **Quick Shortcuts**: Direct access to shops, tenants, contracts, reports
+- **Smart Quick Lists**: Pre-filtered views for available shops, expiring contracts
+- **Advanced Analytics**: Revenue summaries and occupancy reports
 
-## 🚀 Quick Installation (Fixed Version)
+### 📊 Comprehensive Demo Data
+- **20 Airport Shops** across multiple global airports (JFK, LHR, LAX, DXB, SIN, FRA)
+- **10 Airlines** with realistic aircraft fleets and specifications
+- **12 Shop Types** from restaurants to duty-free stores
+- **8 Active Tenants** with major brands like Starbucks, McDonald's, Apple Store
+- **Realistic Contracts** with varied lease terms and financial data
 
+### ⚡ Critical Fixes
+- ✅ **Airport Shop Search Error**: Fixed `AttributeError` in permission queries
+- ✅ **Link Field Issues**: Resolved search functionality in contracts
+- ✅ **Enhanced Permissions**: Robust role-based access control
+- ✅ **Installation Issues**: ERPNext dependency now optional
+
+## 🚀 Quick Installation
+
+### Standard Installation
 ```bash
-# Install the app (all issues fixed)
-bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
+# Clone the repository
+git clone https://github.com/macrobian88/frappe_ariplane_mode.git
+cd frappe_ariplane_mode
 
-# Install on your site
+# Install the app
+bench get-app . --branch main
 bench --site your-site-name install-app airplane_mode
 
-# Run migrations
+# Install demo data (recommended)
+bench --site your-site-name execute airplane_mode.install_demo_data
+
+# Clear cache and restart
+bench clear-cache
+bench restart
+```
+
+### Alternative Installation
+```bash
+# Direct installation from GitHub
+bench get-app https://github.com/macrobian88/frappe_ariplane_mode.git
+bench --site your-site-name install-app airplane_mode
 bench --site your-site-name migrate
 ```
 
-### 🔧 Troubleshooting
+## 📱 Workspaces
 
-If you encounter installation issues:
+### 1. Airplane Mode Workspace
+- ✈️ Airlines management and aircraft fleet
+- 🎫 Flight operations and passenger services
+- 👥 Crew assignment and tracking
+- 📊 Flight analytics and reporting
 
-1. **Run the validator:** `python validate_hooks.py`
-2. **Check troubleshooting guide:** [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md)
-3. **Verify compatibility:** Frappe v15+ recommended
+### 2. 🏪 Airport Shop Management Workspace (NEW!)
+#### Dashboard Cards
+- **Occupied Shops** (Blue) - Real-time occupied shop count
+- **Vacant Shops** (Red) - Available shop spaces
+- **Total Monthly Revenue** (Green) - Sum of all rent amounts
+- **Active Tenants** (Purple) - Current tenant count
 
-## 🌟 Features
+#### Quick Shortcuts
+- **Airport Shops** - Manage shop inventory and details
+- **Shop Types** - Configure shop categories and settings
+- **Tenants** - Handle tenant registration and profiles
+- **Shop Lease Contracts** - Create and manage lease agreements
+- **Occupancy Report** - Detailed analytics and utilization
+- **Revenue Summary** - Financial performance tracking
+- **Contract Expiry** - Track contracts ending soon
+
+#### Smart Quick Lists
+- **Available Shops** - Vacant shops ready for lease
+- **Expiring Contracts** - Contracts ending within 90 days
+- **Active Tenants** - Current tenants with valid contracts
+
+## 🗄️ Demo Data Package
+
+The system now includes comprehensive demo data for immediate testing:
+
+### Airlines & Aircraft
+- **10 Airlines**: American Airlines, Delta, United, Emirates, British Airways, Lufthansa, Air India, Sky Airways, Global Wings, Ocean Air
+- **15+ Aircraft**: Boeing 737-800, 777-300ER, 787-9, Airbus A320, A350-900, A380-800, and more
+- **Realistic Specifications**: Proper capacity, audit status, and airline assignments
+
+### Airports & Infrastructure
+- **10 Global Airports**: JFK (New York), LHR (London), LAX (Los Angeles), DXB (Dubai), SIN (Singapore), FRA (Frankfurt), and more
+- **Airport Codes**: Proper IATA codes and city/country information
+- **Geographic Coverage**: US, UK, UAE, Singapore, Germany representation
+
+### Shop Management
+- **20 Airport Shops**: Realistic shops across multiple terminals
+  - JFK: Starbucks, McDonald's, Apple Store, Hudson News, Duty Free
+  - LHR: Costa Coffee, Boots Pharmacy, Harrods, Pret A Manger
+  - LAX: In-N-Out Burger, Blue Bottle Coffee, Best Buy Express
+  - DXB/SIN/FRA: Premium duty-free and local specialties
+
+- **12 Shop Types**: Restaurant, Coffee Shop, Duty Free, Electronics, Bookstore, Pharmacy, Fashion, Convenience Store, Car Rental, and more
+
+- **8 Active Tenants**: Starbucks Corporation, McDonald's USA LLC, Apple Inc., Hudson Group, Duty Free Americas, and others with realistic contract terms
+
+### Financial Data
+- **Varied Rent Amounts**: $8,000 - $60,000 monthly rent based on location and type
+- **Realistic Contracts**: Mix of contract terms from 6 months to 3 years
+- **Occupancy Mix**: Both occupied and vacant shops for testing
+- **Revenue Analytics**: Immediate data for financial reporting
+
+## 🏗️ System Architecture
+
+### Core DocTypes
+
+#### Flight Operations
+- **Airline** - Airline company information and contact details
+- **Airport** - Airport details, codes, and location information
+- **Airplane** - Aircraft registration, models, and specifications
+- **Airplane Flight** - Flight scheduling, crew, and route management
+
+#### Shop Management
+- **Airport Shop** - Shop inventory, details, and rental information
+- **Shop Type** - Shop categorization and configuration
+- **Tenant** - Tenant profiles, contacts, and contract information
+- **Shop Lease Contract** - Lease agreements and rental contracts
+- **Monthly Bill** - Automated billing and payment tracking
+
+### Enhanced Features
+- **Permission System**: Role-based access with proper query conditions
+- **Search Functionality**: Advanced link field search with resolved permissions
+- **Data Validation**: Comprehensive input validation and error handling
+- **Workflow Support**: Approval processes for contracts and agreements
+- **Report Generation**: Custom query reports and real-time analytics
+
+## 🛠️ Technical Specifications
+
+### Requirements
+- **Frappe Framework**: v15.x or higher
+- **ERPNext**: v15.x (optional, for enhanced financial features)
+- **Python**: 3.8+
+- **Database**: MariaDB 10.3+ or PostgreSQL 12+
+- **Node.js**: 16+ (for frontend development)
+
+### Compatibility
+- ✅ Frappe Cloud hosting
+- ✅ Self-hosted Frappe installations
+- ✅ ERPNext integration (optional)
+- ✅ Custom domain deployment
+- ✅ Multi-tenant environments
+
+## 📚 Documentation
+
+### Installation & Setup
+- [🚀 **Complete Setup Guide**](COMPLETE_SETUP_GUIDE.md) - Comprehensive installation and configuration
+- [🏪 **Workspace Setup**](AIRPORT_SHOP_WORKSPACE_SETUP.md) - Workspace configuration details
+- [💾 **Demo Data Script**](install_demo_data.py) - Automated demo data installation
+- [🔧 **Installation Troubleshooting**](INSTALLATION_TROUBLESHOOTING.md) - Common issues and solutions
+
+### Quick References
+- API documentation for shop portal integration
+- Permission configuration guides
+- Custom report creation tutorials
+- Background job setup instructions
+
+## 🌟 Key Features
 
 ### ✈️ Flight Operations
-- **Flight Management**: Complete flight scheduling and management system
+- **Flight Management**: Complete scheduling and route management
 - **Crew Assignment**: Automated crew assignment and tracking
 - **Gate Management**: Real-time gate allocation and management
 - **Passenger Services**: Ticket management and passenger tracking
-- **Flight Status**: Real-time flight status updates
 
 ### 🏪 Shop Management
-- **Shop Registration**: Complete shop registration and management
-- **Contract Management**: Automated lease agreements and contracts
-- **Rent Collection**: Automated monthly rent collection and invoicing
-- **Lead Management**: Lead generation, tracking, and conversion
-- **Payment Tracking**: Real-time payment status and reminders
+- **Shop Operations**: Comprehensive inventory and management system
+- **Tenant Management**: Complete tenant lifecycle management
+- **Lease Contracts**: Automated contract creation and tracking
+- **Revenue Tracking**: Real-time rent collection and financial reporting
+- **Occupancy Analytics**: Live utilization metrics and forecasting
 
 ### 📊 Analytics & Reporting
-- **Revenue Analytics**: Comprehensive revenue trends and forecasting
-- **Occupancy Reports**: Shop occupancy rates by type and location
-- **Lead Conversion**: Lead-to-customer conversion tracking
-- **Financial Reports**: Monthly, quarterly, and annual financial reports
-- **Performance Dashboard**: Real-time KPIs and metrics
+- **Real-time Dashboards**: Live metrics and KPIs
+- **Revenue Analytics**: Comprehensive financial trends and forecasting
+- **Occupancy Reports**: Shop utilization by type, location, and time
+- **Contract Management**: Renewal tracking and expiry notifications
+- **Performance Metrics**: Operational efficiency measurements
 
 ### 🌐 Public Portal
-- **Shop Availability**: Public portal showing available shops
-- **Online Applications**: Streamlined application process for potential lessees
+- **Shop Availability**: Public portal for available shop spaces
+- **Online Applications**: Streamlined application process for lessees
 - **Automated Notifications**: Email confirmations and follow-ups
-- **Lead Management**: Automated lead capture and processing
-
-## ⚙️ System Requirements
-
-### Minimum Requirements
-- **Frappe Framework**: v15.x or higher
-- **ERPNext**: Optional (v15.x if financial integration needed)
-- **Python**: 3.10+
-- **Node.js**: 16+
-- **Database**: MariaDB 10.3+ or PostgreSQL 13+
-
-### Dependencies
-```python
-# Standalone installation (recommended)
-required_apps = ["frappe"]
-
-# With ERPNext integration (optional)
-required_apps = ["frappe", "erpnext"]
-```
-
-## 🔌 API Reference
-
-### Public APIs (Guest Access)
-
-#### Get Available Shops
-```http
-GET /api/method/airplane_mode.api.shop_portal.get_available_shops
-```
-
-**Response:**
-```json
-{
-  "message": {
-    "status": "success",
-    "shops": [...],
-    "shops_by_type": {...},
-    "total_available": 15
-  }
-}
-```
-
-#### Submit Shop Application
-```http
-POST /api/method/airplane_mode.api.shop_portal.submit_shop_application
-Content-Type: application/json
-
-{
-  "shop_id": "SHOP-001",
-  "lead_data": {
-    "lead_name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+1234567890",
-    "business_type": "Restaurant",
-    "message": "Interested in opening a coffee shop"
-  }
-}
-```
-
-### Authenticated APIs
-
-#### Dashboard Data
-```http
-GET /api/method/airplane_mode.api.shop_portal.get_dashboard_data
-```
-
-#### Shop Analytics
-```http
-GET /api/method/airplane_mode.api.analytics.get_shop_analytics?shop_id=SHOP-001&date_range=6m
-```
-
-#### Revenue Trends
-```http
-GET /api/method/airplane_mode.api.analytics.get_revenue_trends
-```
-
-#### Financial Summary
-```http
-GET /api/method/airplane_mode.api.analytics.get_financial_summary
-```
-
-## 🏗️ Architecture
-
-### DocTypes
-
-#### Core Flight Management
-- **Airplane**: Aircraft details and specifications
-- **Airplane Flight**: Flight scheduling and management
-- **Airplane Ticket**: Passenger ticket management
-- **Crew Member**: Staff assignment and tracking
-
-#### Shop Management
-- **Airport Shop**: Shop registration and details
-- **Shop Type**: Shop categorization and configuration
-- **Contract Shop**: Lease agreements and rental contracts
-- **Shop Lead**: Lead generation and tracking system
-
-### Background Jobs
-
-The system includes automated background jobs:
-
-```python
-# Daily Tasks
-- Send rent reminder emails
-- Process monthly invoices
-- Update payment statuses
-
-# Weekly Tasks  
-- Generate management reports
-- Send performance summaries
-
-# Monthly Tasks
-- Update analytics metrics
-- Generate financial reports
-```
-
-### Email Templates
-
-Pre-configured email templates for:
-- Shop lead welcome emails with beautiful HTML design
-- Rent reminder notifications with payment details
-- Contract renewal notices
-- Invoice notifications with payment links
-
-## 🌐 Web Portal
-
-### Shop Portal Features
-- **Responsive Design**: Works on all devices
-- **Advanced Filtering**: Filter by shop type, size, location
-- **Real-time Search**: Instant search functionality
-- **Detailed Shop Views**: Comprehensive shop information
-- **Online Applications**: Streamlined application process
-- **Beautiful UI**: Modern Bootstrap 5 design
-
-### Portal URLs
-- **Main Portal**: `/shop-portal`
-- **Shop Availability**: `/shop-availability`
-- **Application Form**: `/apply-shop`
-
-## 🔧 Configuration
-
-After installation, configure the following:
-
-### 1. Basic Setup
-- **Shop Types**: Configure shop categories (Food Court, Duty Free, etc.)
-- **Airports**: Set up your airport locations and terminals
-- **Email Settings**: Configure SMTP for automated notifications
-
-### 2. Scheduled Jobs
-Enable the following background tasks:
-- **Daily**: Rent reminder emails, monthly invoice processing
-- **Weekly**: Management reports and analytics
-- **Monthly**: Performance metrics updates
-
-### 3. Permissions
-Set up role-based permissions for:
-- Airport Shop management
-- Contract Shop administration
-- Lead management
-- Financial operations
+- **Lead Management**: Automated lead capture and conversion tracking
 
 ## 🧪 Testing Your Installation
 
-After successful installation:
+After installation, verify the system works correctly:
 
-1. **Check App Lists:**
-   - Log into your Frappe site
-   - Verify "Airport Management System" appears in apps
+### 1. Access Workspaces
+- **Airport Operations**: Navigate to "Airplane Mode" workspace
+- **Shop Management**: Navigate to "Airport Shop Management" workspace
+- **Verify Cards**: Check that dashboard cards show demo data
 
-2. **Test Core Doctypes:**
-   - Navigate to: Airport Shop, Shop Lead, Contract Shop
-   - Create test records
-
-3. **Test Portal Features:**
-   - Visit `/shop-portal` for customer portal
-   - Check `/shop-availability` for public shop listings
-
-4. **Verify Background Jobs:**
-   - Check that scheduler events are configured
-   - Test email notifications (if SMTP is configured)
-
-## 🎨 Customization
-
-### Adding Custom Fields
-
-```python
-# Example: Add custom fields to Airport Shop
-frappe.get_doc({
-    "doctype": "Custom Field",
-    "dt": "Airport Shop",
-    "fieldname": "custom_wifi_available",
-    "label": "WiFi Available",
-    "fieldtype": "Check"
-}).insert()
-```
-
-### Custom Business Logic
-
-```python
-# Example: Custom validation for Contract Shop
-def validate_contract(doc, method):
-    if doc.end_date <= doc.start_date:
-        frappe.throw("End date must be after start date")
-```
-
-### Custom Reports
-
-Create custom reports using Frappe's Report Builder:
-
-```python
-# Example: Custom Revenue Report
-def execute(filters=None):
-    columns = [
-        {"fieldname": "shop", "label": "Shop", "fieldtype": "Link", "options": "Airport Shop"},
-        {"fieldname": "revenue", "label": "Revenue", "fieldtype": "Currency"}
-    ]
-    
-    data = frappe.db.sql("""
-        SELECT shop, SUM(monthly_rent) as revenue
-        FROM `tabContract Shop`
-        WHERE docstatus = 1
-        GROUP BY shop
-    """, as_dict=True)
-    
-    return columns, data
-```
-
-## 🧪 Testing
-
-Run tests using:
-
+### 2. Test Core Functionality
 ```bash
-# Run all tests
-bench run-tests --app airplane_mode
-
-# Run specific test
-bench run-tests --app airplane_mode --module airplane_mode.tests.test_shop_portal
-
-# Run with coverage
-bench run-tests --app airplane_mode --coverage
+# Create a new shop lease contract
+1. Go to "Shop Lease Contracts" in workspace
+2. Click "New"
+3. Select an Airport Shop (should work without errors)
+4. Fill tenant and contract details
+5. Save successfully
 ```
 
-## 📈 Performance
+### 3. Verify Demo Data
+```bash
+# Check demo data installation
+bench --site your-site-name console
+```
 
-### Database Optimization
-- Indexed fields for faster queries
-- Optimized database schema
-- Efficient background job processing
+In console:
+```python
+import frappe
+print(f"Airport Shops: {frappe.db.count('Airport Shop')}")
+print(f"Tenants: {frappe.db.count('Tenant')}")
+print(f"Airlines: {frappe.db.count('Airline')}")
+print(f"Airports: {frappe.db.count('Airport')}")
+```
 
-### Caching
-- API response caching for better performance
-- Static asset optimization
-- Efficient query patterns
+Expected output: 20+ shops, 8+ tenants, 10+ airlines, 10+ airports
 
-## 🔒 Security
+## 🐛 Troubleshooting
 
-### Data Protection
-- GDPR compliant data handling
-- User data encryption
-- Secure API endpoints
-- Role-based access control
+### Common Issues
 
-### Privacy Features
-- Data retention policies (90 days for leads, 1 year for contracts)
-- User consent management
-- Automated data cleanup
+#### Installation Problems
+```bash
+# Clear cache and restart
+bench clear-cache
+bench restart
+
+# Reload critical DocTypes
+bench --site your-site-name reload-doctype "Airport Shop"
+bench --site your-site-name reload-doctype "Workspace"
+```
+
+#### Permission Errors
+- Ensure user has System Manager role or appropriate permissions
+- Check that Airport Shop permission fix is applied
+- Verify DocType permissions are properly configured
+
+#### Demo Data Issues
+```bash
+# Reinstall demo data
+bench --site your-site-name execute airplane_mode.install_demo_data
+
+# Clean up and reinstall (if needed)
+bench --site your-site-name execute airplane_mode.install_demo_data --args "--cleanup"
+```
+
+### Getting Help
+1. **Check Logs**: `bench logs` for detailed error information
+2. **Documentation**: Review the comprehensive guides in this repository
+3. **GitHub Issues**: Create an issue for bugs or feature requests
+4. **Community**: Join Frappe community for general questions
+
+## 🔧 Advanced Configuration
+
+### Custom Workspace Modifications
+1. Navigate to **Workspace** DocType
+2. Find "Airport Shop Management" record
+3. Modify dashboard cards, shortcuts, or layout
+4. Save and refresh to apply changes
+
+### Performance Optimization
+```sql
+-- Add database indexes for better performance
+CREATE INDEX idx_airport_shop_occupied ON `tabAirport Shop`(is_occupied);
+CREATE INDEX idx_airport_shop_airport ON `tabAirport Shop`(airport);
+CREATE INDEX idx_tenant_contract_end ON `tabTenant`(contract_end_date);
+```
+
+### Security Configuration
+- Configure role-based permissions
+- Set up data retention policies
+- Enable audit trails for financial transactions
+- Implement workflow approvals for contracts
 
 ## 🤝 Contributing
 
 We welcome contributions! Please follow these guidelines:
 
 ### Development Workflow
-
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Add tests for new functionality
-5. Commit your changes: `git commit -m 'Add amazing feature'`
-6. Push to the branch: `git push origin feature/amazing-feature`
-7. Submit a pull request
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Make changes and add tests
+4. Commit: `git commit -m 'Add amazing feature'`
+5. Push: `git push origin feature/amazing-feature`
+6. Submit pull request
 
-### Code Style
+### Code Standards
+- Follow Frappe coding conventions
+- Add comprehensive docstrings
+- Include unit tests for new features
+- Update documentation for changes
 
-This project uses:
-- **Python**: PEP 8 style guide with Black formatting
-- **JavaScript**: ESLint configuration with Prettier
-- **Pre-commit hooks**: Automated code formatting
-
-```bash
-# Install pre-commit hooks
-cd apps/airplane_mode
-pre-commit install
-```
-
-## 📝 License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-### Documentation
-- **Installation Issues**: [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md)
-- **Hook Validator**: `python validate_hooks.py`
-- **User Guide**: Available in the app documentation
-- **API Documentation**: See API Reference section above
+### Documentation & Guides
+- [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md) - Step-by-step installation
+- [Workspace Setup](AIRPORT_SHOP_WORKSPACE_SETUP.md) - Workspace configuration
+- [Installation Troubleshooting](INSTALLATION_TROUBLESHOOTING.md) - Common issues
 
 ### Community Support
-- 📧 Email: nandhakishore2165@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/macrobian88/frappe_ariplane_mode/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/macrobian88/frappe_ariplane_mode/discussions)
+- 📧 **Email**: nandhakishore2165@gmail.com
+- 🐛 **Issues**: [GitHub Issues](https://github.com/macrobian88/frappe_ariplane_mode/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/macrobian88/frappe_ariplane_mode/discussions)
 
 ### Commercial Support
-For enterprise support, custom development, and consultation services, please contact us at nandhakishore2165@gmail.com.
+For enterprise support, custom development, and consultation services, contact nandhakishore2165@gmail.com.
 
-## 🙏 Acknowledgments
+## 🎯 Roadmap
 
-- Built with ❤️ using [Frappe Framework](https://frappeframework.com)
-- Inspired by modern airport management needs
-- Community feedback and contributions
-- Bootstrap 5 for beautiful UI components
-- Font Awesome for icons
+### Current Features ✅
+- Complete flight and airport operations management
+- Advanced shop management with tenant tracking
+- Automated rent collection and billing
+- Real-time analytics and reporting
+- Public portal for shop applications
+- Comprehensive demo data package
+- Custom workspaces with dashboards
 
-## 📊 Project Status
+### Upcoming Features 🔄
+- **Mobile App**: React Native application for shop management
+- **API Extensions**: RESTful APIs for third-party integrations
+- **Advanced Analytics**: Machine learning-based occupancy predictions
+- **Multi-airport Support**: Enhanced multi-location management
+- **Automated Billing**: Advanced recurring invoice generation
+- **Email Automation**: Contract renewal and payment reminders
 
-- ✅ Core flight management
-- ✅ Shop management system  
-- ✅ Automated rent collection
-- ✅ Public web portal
-- ✅ Analytics dashboard
-- ✅ Email notification system
-- ✅ Lead management system
-- ✅ Beautiful responsive UI
-- ✅ **Installation issues fixed**
-- ✅ **Standalone compatibility**
-- 🔄 Mobile app (planned)
-- 🔄 Advanced reporting (planned)
-- 🔄 Multi-airport support (planned)
+## 📊 Project Stats
 
-## 🚀 Recent Updates
-
-### Version 2.0.0 (Latest - Fixed Installation Issues)
-- 🔧 **FIXED**: ERPNext dependency requirement (now optional)
-- 🔧 **FIXED**: 'dict' object has no attribute 'extend' error
-- 🔧 **FIXED**: Hook configuration validation
-- 🆕 **NEW**: Standalone installation support
-- 🆕 **NEW**: Comprehensive validation tools
-- 🆕 **NEW**: Installation troubleshooting guide
-- 🔧 **ENHANCED**: Compatibility with various Frappe configurations
-- 🔧 **ENHANCED**: Error handling and diagnostics
-
-### Version 1.0.0 (Previous)
-- **New**: Complete shop management system
-- **New**: Automated rent collection with invoicing
-- **New**: Public shop portal with online applications
-- **New**: Beautiful email notifications with HTML templates
-- **New**: Comprehensive analytics and reporting
-- **New**: Modern responsive web design
-- **Enhanced**: Background job automation
-- **Enhanced**: API endpoints for shop management
-- **Fixed**: Various performance improvements
+- **Total DocTypes**: 15+ core business entities
+- **Workspaces**: 2 specialized workspaces (Airport Operations, Shop Management)
+- **Demo Records**: 80+ realistic data entries across all modules
+- **Custom Reports**: 5+ analytics reports and dashboards
+- **Permission Roles**: 4+ user role configurations
+- **GitHub Stars**: Growing community support
 
 ---
 
-**Made with ❤️ for the aviation industry**
+### 🎉 Get Started Today!
 
-*Transform your airport operations with this comprehensive management solution.*
+Transform your airport operations with this comprehensive management solution. Follow the [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md) to have a fully functional system with demo data running in minutes!
 
-> 🔗 **Related Repository**: For basic airplane mode implementation, see [airport-automation](https://github.com/macrobian88/airport-automation)
+**Latest Version**: 2.1.0 (with Airport Shop Management Workspace)  
+**Repository**: https://github.com/macrobian88/frappe_ariplane_mode  
+**Last Updated**: September 16, 2025  
+**Compatible With**: Frappe v15.x, ERPNext v15.x
+
+---
+
+*Built with ❤️ using Frappe Framework for the aviation industry*
