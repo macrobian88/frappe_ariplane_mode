@@ -1,4 +1,1 @@
-airplane_mode.patches.v1_0.fix_contract_status
-airplane_mode.patches.v1_0.setup_default_shop_types
-airplane_mode.patches.v1_0.update_workspace_links
 airplane_mode.patches.add_occupancy_fields_to_airplane_flight
