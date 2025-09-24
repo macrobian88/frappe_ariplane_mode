@@ -23,7 +23,7 @@ add_to_apps_screen = [
 app_include_css = "/assets/airplane_mode/css/airplane_mode.css"
 app_include_js = "/assets/airplane_mode/js/airplane_mode.js"
 web_include_css = "/assets/airplane_mode/css/web.css"
-web_include_js = "/assets/airplane_mode/js/web.js"
+web_include_js = "/assets/airplane_mode/js/airplane_mode.js"
 
 # include js in doctype views
 doctype_js = {
@@ -110,8 +110,8 @@ jinja = {
     "filters": "airplane_mode.utils.jinja_filters"
 }
 
-# Boot Session - FIXED: Must be a list
-boot_session = "airplane_mode.utils.boot_session"
+# Boot Session - FIXED: Changed to list format
+boot_session = ["airplane_mode.utils.boot_session"]
 
 # User Data Protection
 user_data_fields = [
@@ -252,3 +252,4 @@ onboard_steps = [
 # 2. Added daily scheduled task to recalculate all flight occupancy
 # 3. This ensures occupancy is always accurate and up-to-date
 # 4. All hooks follow proper Frappe conventions
+# 5. FIXED: boot_session is now properly formatted as a list
