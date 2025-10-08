@@ -1,1 +1,2 @@
 airplane_mode.patches.add_occupancy_fields_to_airplane_flight
+airplane_mode.patches.fix_flight_crew_role_field
