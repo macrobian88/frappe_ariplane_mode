@@ -1,3 +1,4 @@
 airplane_mode.patches.add_occupancy_fields_to_airplane_flight
 airplane_mode.patches.fix_flight_crew_role_field
 airplane_mode.patches.remove_duplicate_shop_types
+airplane_mode.patches.cleanup_unused_doctypes
