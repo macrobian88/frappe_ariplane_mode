@@ -33,17 +33,17 @@ def get_columns():
             "width": 150
         },
         {
+            "label": _("Shop Number"),
+            "fieldname": "shop_number",
+            "fieldtype": "Data",
+            "width": 120
+        },
+        {
             "label": _("Airport"),
             "fieldname": "airport",
             "fieldtype": "Link",
             "options": "Airport",
             "width": 120
-        },
-        {
-            "label": _("Terminal"),
-            "fieldname": "terminal",
-            "fieldtype": "Data",
-            "width": 100
         },
         {
             "label": _("Shop Type"),
@@ -54,8 +54,14 @@ def get_columns():
         },
         {
             "label": _("Area (sq ft)"),
-            "fieldname": "area",
+            "fieldname": "area_sq_feet",
             "fieldtype": "Float",
+            "width": 100
+        },
+        {
+            "label": _("Is Occupied"),
+            "fieldname": "is_occupied",
+            "fieldtype": "Check",
             "width": 100
         },
         {
@@ -94,12 +100,6 @@ def get_columns():
             "fieldname": "revenue_ytd",
             "fieldtype": "Currency",
             "width": 120
-        },
-        {
-            "label": _("Status"),
-            "fieldname": "shop_status",
-            "fieldtype": "Data",
-            "width": 100
         }
     ]
 
@@ -113,16 +113,16 @@ def get_data(filters):
         SELECT 
             s.name as shop_id,
             s.shop_name,
+            s.shop_number,
             s.airport,
-            s.terminal,
             s.shop_type,
-            s.area,
-            s.status as shop_status
+            s.area_sq_feet,
+            s.is_occupied
         FROM 
             `tabAirport Shop` s
         {conditions}
         ORDER BY 
-            s.airport, s.terminal, s.shop_name
+            s.airport, s.shop_name
     """
     
     shop_data = frappe.db.sql(shop_query, as_dict=True)
@@ -159,11 +159,8 @@ def get_conditions(filters):
     if filters.get("shop_type"):
         conditions.append(f"AND s.shop_type = '{filters['shop_type']}'")
     
-    if filters.get("terminal"):
-        conditions.append(f"AND s.terminal = '{filters['terminal']}'")
-    
-    if filters.get("status"):
-        conditions.append(f"AND s.status = '{filters['status']}'")
+    if filters.get("is_occupied") is not None:
+        conditions.append(f"AND s.is_occupied = {filters['is_occupied']}")
     
     return " ".join(conditions)
 
@@ -262,8 +259,7 @@ def get_report_filters():
     return {
         'airports': frappe.get_all('Airport', fields=['name', 'city'], order_by='city'),
         'shop_types': frappe.get_all('Shop Type', fields=['name', 'description'], order_by='name'),
-        'terminals': frappe.db.sql("SELECT DISTINCT terminal FROM `tabAirport Shop` WHERE terminal IS NOT NULL ORDER BY terminal"),
-        'status_options': ['Active', 'Inactive', 'Under Maintenance', 'Under Construction']
+        'occupancy_options': [{'name': 1, 'label': 'Occupied'}, {'name': 0, 'label': 'Vacant'}]
     }
 
 
