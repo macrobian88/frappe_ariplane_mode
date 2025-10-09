@@ -1,8 +1,8 @@
 app_name = "airplane_mode"
 app_title = "Airport Management System"
-app_publisher = "nandhakishore"
+app_publisher = "Ram Shankar"
 app_description = "Comprehensive Airport Management System with Flight Operations, Shop Management, and Rent Collection"
-app_email = "nandhakishore2165@gmail.com"
+app_email = "ram@walue.biz"
 app_license = "mit"
 
 # Required Apps - Set to minimal dependencies for broader compatibility
