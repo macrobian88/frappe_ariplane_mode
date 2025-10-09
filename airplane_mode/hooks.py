@@ -12,7 +12,7 @@ required_apps = ["frappe"]
 add_to_apps_screen = [
     {
         "name": "airplane_mode",
-        "logo": "/assets/airplane_mode/logo.png",
+        "logo": "/assets/airplane_mode/images/logo.svg",
         "title": "Airport Management",
         "route": "/airplane_mode",
         "has_permission": "airplane_mode.api.permission.has_app_permission"
@@ -25,6 +25,8 @@ app_include_js = [
     "/assets/airplane_mode/js/airplane_mode.js",
     "/assets/airplane_mode/js/airplane_dashboard.js"
 ]
+
+# Website includes - Use SVG fallback for favicon
 web_include_css = "/assets/airplane_mode/css/web.css"
 web_include_js = "/assets/airplane_mode/js/airplane_mode.js"
 
@@ -86,11 +88,11 @@ scheduler_events = {
     ]
 }
 
-# Website Routes
+# Website Routes - Updated for proper route handling
 website_route_rules = [
-    {"from_route": "/shop-portal", "to_route": "Airport Shop Portal"},
-    {"from_route": "/shop-availability", "to_route": "Shop Availability"},
-    {"from_route": "/apply-shop", "to_route": "Shop Application"},
+    {"from_route": "/shop-portal", "to_route": "shop-portal"},
+    {"from_route": "/shop-availability", "to_route": "shop-availability"},
+    {"from_route": "/apply-shop", "to_route": "apply-shop"},
     {"from_route": "/airplane-dashboard", "to_route": "airplane-dashboard"}
 ]
 
@@ -193,10 +195,10 @@ standard_email_templates = [
     }
 ]
 
-# Website Context
+# Website Context - Updated to use SVG files as fallback
 website_context = {
-    "favicon": "/assets/airplane_mode/images/favicon.ico",
-    "splash_image": "/assets/airplane_mode/images/splash.png"
+    "favicon": "/assets/airplane_mode/images/favicon.svg",
+    "splash_image": "/assets/airplane_mode/images/splash.svg"
 }
 
 # Auto Email Reports
@@ -393,9 +395,7 @@ onboard_steps = [
 ]
 
 # NOTES:
-# 1. Added Airport Shop Management DocTypes to document events
-# 2. Added scheduled task for rent remainder alerts
-# 3. Added dashboard charts for shop revenue and payment status
-# 4. Added number cards for shop metrics
-# 5. Added Airport Shop Settings to fixtures and onboard steps
-# 6. Updated DocType paths to reflect Airport Shop Management module
+# 1. Updated website routes to use proper format
+# 2. Changed favicon and splash image to use SVG fallback
+# 3. Added proper asset references
+# 4. Fixed route handling for website pages
