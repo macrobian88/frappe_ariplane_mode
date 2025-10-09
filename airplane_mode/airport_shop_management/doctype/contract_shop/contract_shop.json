@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-08-22 11:06:58.485144",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "shop_name",
+  "tenant_name",
+  "contract_details_section",
+  "start_date",
+  "end_date",
+  "column_break_5",
+  "monthly_rent",
+  "security_deposit",
+  "status",
+  "section_break_9",
+  "shop_details",
+  "contact_information_section",
+  "tenant_contact",
+  "tenant_email",
+  "column_break_12",
+  "emergency_contact",
+  "emergency_contact_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CSH-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "shop_name",
+   "fieldtype": "Data",
+   "label": "Shop Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name",
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "contract_details_section",
+   "fieldtype": "Section Break",
+   "label": "Contract Details"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Contract Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "Contract End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monthly_rent",
+   "fieldtype": "Currency",
+   "label": "Monthly Rent",
+   "reqd": 1
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive\nTerminated\nExpired"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "shop_details",
+   "fieldtype": "Text",
+   "label": "Shop Details"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "tenant_contact",
+   "fieldtype": "Data",
+   "label": "Tenant Contact Number"
+  },
+  {
+   "fieldname": "tenant_email",
+   "fieldtype": "Data",
+   "label": "Tenant Email"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emergency_contact",
+   "fieldtype": "Data",
+   "label": "Emergency Contact Person"
+  },
+  {
+   "fieldname": "emergency_contact_number",
+   "fieldtype": "Data",
+   "label": "Emergency Contact Number"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-10-08 16:24:27.640059",
+ "modified_by": "Administrator",
+ "module": "Airport Shop Management",
+ "name": "Contract Shop",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "shop_name",
+ "track_changes": 1
+}
