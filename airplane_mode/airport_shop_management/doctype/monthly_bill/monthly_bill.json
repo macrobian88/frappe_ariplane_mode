@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2025-08-22 11:06:58.485144",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "bill_item",
+  "description",
+  "amount",
+  "due_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "bill_item",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bill Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-10-08 16:24:27.640059",
+ "modified_by": "Administrator",
+ "module": "Airport Shop Management",
+ "name": "Monthly Bill",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
