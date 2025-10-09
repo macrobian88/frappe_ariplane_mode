@@ -22,32 +22,36 @@ class MonthlyInvoice(Document):
 			self.payment_date = today()
 			self.save()
 
-	def get_permission_query_conditions(user):
-		"""Return permission query conditions for Monthly Invoice"""
-		if not user:
-			user = frappe.session.user
-		
-		if "System Manager" in frappe.get_roles(user):
-			return ""
-		
-		# Regular users can only see invoices for their contracts
-		return f"""(`tabMonthly Invoice`.owner = '{user}')"""
 
-	def has_permission(doc, user):
-		"""Check if user has permission for Monthly Invoice document"""
-		if not user:
-			user = frappe.session.user
-		
-		if "System Manager" in frappe.get_roles(user):
-			return True
-		
-		# Check if user owns the contract
-		if doc.contract:
-			contract = frappe.get_doc("Shop Lease Contract", doc.contract)
-			return contract.owner == user or contract.tenant_email == user
-		
-		return False
-			
+# Module-level permission functions (FIXED: Moved outside the class)
+def get_permission_query_conditions(user):
+	"""Return permission query conditions for Monthly Invoice"""
+	if not user:
+		user = frappe.session.user
+	
+	if "System Manager" in frappe.get_roles(user):
+		return ""
+	
+	# Regular users can only see invoices for their contracts
+	return f"""(`tabMonthly Invoice`.owner = '{user}')"""
+
+
+def has_permission(doc, user):
+	"""Check if user has permission for Monthly Invoice document"""
+	if not user:
+		user = frappe.session.user
+	
+	if "System Manager" in frappe.get_roles(user):
+		return True
+	
+	# Check if user owns the contract
+	if doc.contract:
+		contract = frappe.get_doc("Shop Lease Contract", doc.contract)
+		return contract.owner == user or contract.tenant_email == user
+	
+	return False
+
+
 def update_payment_status(doc, method):
 	"""Hook function called on Monthly Invoice submission"""
 	if doc.payment_status == "Paid" and not doc.payment_date:
