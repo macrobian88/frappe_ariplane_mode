@@ -118,3 +118,35 @@ def send_pending_alerts():
 		sent_count += 1
 	
 	return f"Sent {sent_count} rent reminder alerts"
+
+@frappe.whitelist()
+def check_rent_due_alerts():
+	"""Main method called by scheduler to check and process rent due alerts"""
+	try:
+		# Step 1: Create new alerts for upcoming due dates
+		create_result = create_rent_alerts()
+		
+		# Step 2: Send pending alerts
+		send_result = send_pending_alerts()
+		
+		# Log results
+		frappe.log_error(
+			title="Rent Due Alerts Check",
+			message=f"Daily rent alerts check completed successfully.\n{create_result}\n{send_result}"
+		)
+		
+		return {
+			"success": True,
+			"create_result": create_result,
+			"send_result": send_result
+		}
+		
+	except Exception as e:
+		frappe.log_error(
+			title="Rent Due Alerts Error",
+			message=f"Error during rent due alerts check: {str(e)}"
+		)
+		return {
+			"success": False,
+			"error": str(e)
+		}
