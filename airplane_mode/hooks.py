@@ -21,7 +21,10 @@ add_to_apps_screen = [
 
 # Includes in <head>
 app_include_css = "/assets/airplane_mode/css/airplane_mode.css"
-app_include_js = "/assets/airplane_mode/js/airplane_mode.js"
+app_include_js = [
+    "/assets/airplane_mode/js/airplane_mode.js",
+    "/assets/airplane_mode/js/airplane_dashboard.js"
+]
 web_include_css = "/assets/airplane_mode/css/web.css"
 web_include_js = "/assets/airplane_mode/js/airplane_mode.js"
 
@@ -78,7 +81,8 @@ scheduler_events = {
 website_route_rules = [
     {"from_route": "/shop-portal", "to_route": "Airport Shop Portal"},
     {"from_route": "/shop-availability", "to_route": "Shop Availability"},
-    {"from_route": "/apply-shop", "to_route": "Shop Application"}
+    {"from_route": "/apply-shop", "to_route": "Shop Application"},
+    {"from_route": "/airplane-dashboard", "to_route": "airplane-dashboard"}
 ]
 
 # Fixtures
@@ -90,6 +94,14 @@ fixtures = [
     {
         "dt": "Airport",
         "filters": [["name", "in", ["Bangalore International Airport", "Chennai International Airport"]]]
+    },
+    {
+        "dt": "Workspace",
+        "filters": [["name", "in", ["Airplane Mode"]]]
+    },
+    {
+        "dt": "Number Card",
+        "filters": [["parent", "=", "Airplane Mode"]]
     }
 ]
 
@@ -193,18 +205,72 @@ override_standard_pages = {
 # Dashboard Charts
 dashboard_charts = [
     {
-        "chart_name": "Shop Occupancy",
+        "chart_name": "Flight Status Overview",
         "chart_type": "donut",
+        "doctype": "Airplane Flight",
+        "based_on": "status",
         "timeseries": 0,
-        "based_on": "shop_type",
+        "value_based_on": "count"
+    },
+    {
+        "chart_name": "Ticket Status Overview",
+        "chart_type": "donut", 
+        "doctype": "Airplane Ticket",
+        "based_on": "status",
+        "timeseries": 0,
         "value_based_on": "count"
     },
     {
         "chart_name": "Monthly Revenue",
         "chart_type": "line", 
-        "timeseries": 1,
-        "based_on": "posting_date",
-        "value_based_on": "grand_total"
+        "doctype": "Airplane Ticket",
+        "based_on": "creation",
+        "value_based_on": "total_price",
+        "timeseries": 1
+    }
+]
+
+# Number Cards Configuration
+number_cards = [
+    {
+        "name": "Total Tickets",
+        "doctype": "Airplane Ticket",
+        "function": "Count",
+        "aggregate_function_based_on": "",
+        "filters_json": "[]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Total Flights", 
+        "doctype": "Airplane Flight",
+        "function": "Count",
+        "aggregate_function_based_on": "",
+        "filters_json": "[]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Confirmed Tickets",
+        "doctype": "Airplane Ticket", 
+        "function": "Count",
+        "aggregate_function_based_on": "",
+        "filters_json": "[[\"Airplane Ticket\",\"status\",\"in\",[\"Booked\",\"Checked-In\",\"Boarded\"]]]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Total Revenue",
+        "doctype": "Airplane Ticket",
+        "function": "Sum", 
+        "aggregate_function_based_on": "total_price",
+        "filters_json": "[[\"Airplane Ticket\",\"status\",\"!=\",\"Cancelled\"]]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
     }
 ]
 
@@ -248,8 +314,9 @@ onboard_steps = [
 ]
 
 # NOTES:
-# 1. Added hooks for Airplane Ticket to update flight occupancy when tickets are created/updated/cancelled
-# 2. Added daily scheduled task to recalculate all flight occupancy
-# 3. This ensures occupancy is always accurate and up-to-date
-# 4. All hooks follow proper Frappe conventions
-# 5. FIXED: boot_session is now properly formatted as a list
+# 1. Added dashboard JavaScript include for airplane_dashboard.js
+# 2. Added website route for airplane-dashboard 
+# 3. Added Workspace and Number Card fixtures
+# 4. Added dashboard charts configuration
+# 5. Added number cards configuration for counters
+# 6. This ensures the dashboard counters will be displayed properly

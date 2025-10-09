@@ -1,0 +1,205 @@
+[
+ {
+  "doctype": "Workspace",
+  "name": "Airplane Mode",
+  "title": "Airplane Mode",
+  "category": "Modules",
+  "icon": "airplane",
+  "is_standard": 1,
+  "module": "Airplane Mode",
+  "label": "Airplane Mode",
+  "public": 1,
+  "extends_another_page": 0,
+  "is_hidden": 0,
+  "onboarding": "Airplane Mode",
+  "content": "[{\"id\":\"dashboard_counters\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Dashboard Counters\",\"col\":12}},{\"id\":\"flight_management\",\"type\":\"card\",\"data\":{\"card_name\":\"Flight Operations\",\"col\":6}},{\"id\":\"passenger_management\",\"type\":\"card\",\"data\":{\"card_name\":\"Passenger Management\",\"col\":6}},{\"id\":\"aircraft_management\",\"type\":\"card\",\"data\":{\"card_name\":\"Aircraft Management\",\"col\":6}},{\"id\":\"reports_analytics\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports & Analytics\",\"col\":6}}]",
+  "number_cards": [
+   {
+    "label": "Total Tickets",
+    "document_type": "Airplane Ticket",
+    "function": "Count",
+    "aggregate_function_based_on": "",
+    "color": "#FF5858",
+    "filters_json": "[]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Total Flights",
+    "document_type": "Airplane Flight", 
+    "function": "Count",
+    "aggregate_function_based_on": "",
+    "color": "#29CD42",
+    "filters_json": "[]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Confirmed Tickets",
+    "document_type": "Airplane Ticket",
+    "function": "Count", 
+    "aggregate_function_based_on": "",
+    "color": "#5E64FF",
+    "filters_json": "[[\"Airplane Ticket\",\"status\",\"in\",[\"Booked\",\"Checked-In\",\"Boarded\"]]]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Cancelled Tickets",
+    "document_type": "Airplane Ticket",
+    "function": "Count",
+    "aggregate_function_based_on": "",
+    "color": "#FF8D2D", 
+    "filters_json": "[[\"Airplane Ticket\",\"status\",\"=\",\"Cancelled\"]]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Completed Flights",
+    "document_type": "Airplane Flight",
+    "function": "Count",
+    "aggregate_function_based_on": "",
+    "color": "#28A745",
+    "filters_json": "[[\"Airplane Flight\",\"status\",\"=\",\"Completed\"]]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Scheduled Flights", 
+    "document_type": "Airplane Flight",
+    "function": "Count",
+    "aggregate_function_based_on": "",
+    "color": "#17A2B8",
+    "filters_json": "[[\"Airplane Flight\",\"status\",\"=\",\"Scheduled\"]]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Total Revenue",
+    "document_type": "Airplane Ticket",
+    "function": "Sum",
+    "aggregate_function_based_on": "total_price",
+    "color": "#FFC107",
+    "filters_json": "[[\"Airplane Ticket\",\"status\",\"!=\",\"Cancelled\"]]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   },
+   {
+    "label": "Total Passengers",
+    "document_type": "Airplane Flight",
+    "function": "Sum", 
+    "aggregate_function_based_on": "occupancy_count",
+    "color": "#6F42C1",
+    "filters_json": "[]",
+    "is_public": 1,
+    "show_percentage_stats": 1,
+    "stats_time_interval": "Daily"
+   }
+  ],
+  "charts": [
+   {
+    "chart_name": "Flight Status Overview",
+    "label": "Flight Status Overview"
+   },
+   {
+    "chart_name": "Ticket Status Overview",
+    "label": "Ticket Status Overview" 
+   }
+  ],
+  "shortcuts": [
+   {
+    "label": "Airplane Flight",
+    "link_to": "Airplane Flight",
+    "type": "DocType",
+    "color": "Grey",
+    "stats_filter": "{\"status\":[\"=\",\"Scheduled\"]}",
+    "format": "{} Scheduled"
+   },
+   {
+    "label": "Airplane Ticket", 
+    "link_to": "Airplane Ticket",
+    "type": "DocType",
+    "color": "Grey",
+    "stats_filter": "{\"status\":[\"!=\",\"Cancelled\"]}",
+    "format": "{} Active"
+   },
+   {
+    "label": "Flight Passenger",
+    "link_to": "Flight Passenger",
+    "type": "DocType",
+    "color": "Grey",
+    "format": "{} Total"
+   },
+   {
+    "label": "Airplane",
+    "link_to": "Airplane", 
+    "type": "DocType",
+    "color": "Grey",
+    "format": "{} Aircraft"
+   }
+  ],
+  "links": [
+   {
+    "label": "Flight Operations",
+    "link_to": "Airplane Flight",
+    "link_type": "DocType",
+    "is_query_report": 0,
+    "hidden": 0
+   },
+   {
+    "label": "Airplane Ticket",
+    "link_to": "Airplane Ticket",
+    "link_type": "DocType", 
+    "is_query_report": 0,
+    "hidden": 0
+   },
+   {
+    "label": "Flight Passenger",
+    "link_to": "Flight Passenger",
+    "link_type": "DocType",
+    "is_query_report": 0,
+    "hidden": 0
+   },
+   {
+    "label": "Aircraft Management",
+    "link_to": "Airplane",
+    "link_type": "DocType",
+    "is_query_report": 0,
+    "hidden": 0
+   },
+   {
+    "label": "Airlines",
+    "link_to": "Airline",
+    "link_type": "DocType",
+    "is_query_report": 0,
+    "hidden": 0
+   },
+   {
+    "label": "Airports",
+    "link_to": "Airport", 
+    "link_type": "DocType",
+    "is_query_report": 0,
+    "hidden": 0
+   }
+  ],
+  "quick_lists": [
+   {
+    "document_type": "Airplane Flight",
+    "label": "Recent Flights",
+    "quick_list_filter": "{\"docstatus\":[\"!=\",2]}"
+   },
+   {
+    "document_type": "Airplane Ticket",
+    "label": "Recent Bookings", 
+    "quick_list_filter": "{\"docstatus\":[\"!=\",2]}"
+   }
+  ]
+ }
+]
