@@ -4,6 +4,30 @@
 
 A comprehensive Frappe application for managing airport operations including flight management, passenger services, crew assignment, and advanced shop management with automated rent collection and analytics.
 
+## ⚠️ Quick Fixes
+
+### 🔧 JavaScript MIME Type Error Fix
+If you encounter this error in browser console:
+```
+Refused to execute script from '.../assets/airplane_mode/js/airplane_mode.js' because its MIME type ('text/html') is not executable
+```
+
+**Quick Solution:**
+```bash
+# Run the automated fix script
+chmod +x fix_mime_types.sh
+./fix_mime_types.sh
+```
+
+**Or manual fix:**
+```bash
+bench clear-cache
+bench build --app airplane_mode --force
+bench restart
+```
+
+📖 **See [JAVASCRIPT_MIME_TYPE_FIX.md](JAVASCRIPT_MIME_TYPE_FIX.md) for detailed troubleshooting**
+
 ## 🌟 New Features & Updates
 
 ### 🎯 Enhanced Bulk Data Creation
@@ -22,6 +46,7 @@ A comprehensive Frappe application for managing airport operations including fli
 - **Advanced Analytics**: Revenue summaries and occupancy reports
 
 ### ⚡ Critical Fixes
+- ✅ **JavaScript MIME Type Issues**: Fixed asset serving with proper content types
 - ✅ **Airport Shop Search Error**: Fixed `AttributeError` in permission queries
 - ✅ **Link Field Issues**: Resolved search functionality in contracts
 - ✅ **Enhanced Permissions**: Robust role-based access control
@@ -48,6 +73,9 @@ bench --site your-site-name execute airplane_mode.create_bulk_sample_data
 # Clear cache and restart
 bench clear-cache
 bench restart
+
+# Fix any MIME type issues (if needed)
+./fix_mime_types.sh
 ```
 
 ### Alternative Installation
@@ -277,6 +305,7 @@ Expected output with bulk data:
 - [💾 **Demo Data Script**](install_demo_data.py) - Basic demo data installation
 - [🎯 **Bulk Data Script**](create_bulk_sample_data.py) - Comprehensive bulk data creation
 - [🔧 **Installation Troubleshooting**](INSTALLATION_TROUBLESHOOTING.md) - Common issues and solutions
+- [🛠️ **JavaScript MIME Type Fix**](JAVASCRIPT_MIME_TYPE_FIX.md) - Resolve asset serving issues
 
 ### Advanced Usage
 - API documentation for shop portal integration
@@ -310,6 +339,20 @@ Expected output with bulk data:
 ## 🐛 Troubleshooting
 
 ### Common Issues
+
+#### 🔧 JavaScript MIME Type Errors
+```bash
+# Run automated fix script
+chmod +x fix_mime_types.sh
+./fix_mime_types.sh
+
+# Or manual fix
+bench clear-cache
+bench build --app airplane_mode --force
+bench restart
+```
+
+📖 **See [JAVASCRIPT_MIME_TYPE_FIX.md](JAVASCRIPT_MIME_TYPE_FIX.md) for complete troubleshooting guide**
 
 #### Installation Problems
 ```bash
@@ -392,6 +435,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md) - Step-by-step installation
 - [Workspace Setup](AIRPORT_SHOP_WORKSPACE_SETUP.md) - Workspace configuration
 - [Installation Troubleshooting](INSTALLATION_TROUBLESHOOTING.md) - Common issues
+- [JavaScript MIME Type Fix](JAVASCRIPT_MIME_TYPE_FIX.md) - Asset serving issues
 
 ### Community Support
 - 📧 **Email**: ram@walue.biz
@@ -411,6 +455,7 @@ For enterprise support, custom development, and consultation services, contact r
 - Bulk demo data creation (120+ shops, 55+ aircraft)
 - Performance-optimized large dataset handling
 - Custom workspaces with dashboards
+- JavaScript MIME type fixes for proper asset serving
 
 ### Upcoming Features 🔄
 - **Mobile App**: React Native application for shop management
@@ -441,11 +486,15 @@ git clone https://github.com/macrobian88/frappe_ariplane_mode.git
 bench get-app ./frappe_ariplane_mode
 bench --site your-site-name install-app airplane_mode
 bench --site your-site-name execute airplane_mode.create_bulk_sample_data
+
+# Fix any MIME type issues
+chmod +x fix_mime_types.sh
+./fix_mime_types.sh
 ```
 
-**Latest Version**: 2.2.0 (with Bulk Data Creation)  
+**Latest Version**: 2.3.0 (with MIME Type Fixes)  
 **Repository**: https://github.com/macrobian88/frappe_ariplane_mode  
-**Last Updated**: September 16, 2025  
+**Last Updated**: October 9, 2025  
 **Compatible With**: Frappe v15.x, ERPNext v15.x
 
 ---
