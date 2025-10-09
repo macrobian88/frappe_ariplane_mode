@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgGrad)"/>
+  <text x="200" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white">✈️ Airplane Mode</text>
+  <text x="200" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="white" opacity="0.9">Airport Management System</text>
+  <text x="200" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.7">Streamlined operations for modern airports</text>
+</svg>
