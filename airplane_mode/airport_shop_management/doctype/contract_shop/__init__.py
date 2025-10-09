@@ -1,0 +1,1 @@
+# Contract Shop DocType
