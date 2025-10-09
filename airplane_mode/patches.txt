@@ -2,3 +2,4 @@ airplane_mode.patches.add_occupancy_fields_to_airplane_flight
 airplane_mode.patches.fix_flight_crew_role_field
 airplane_mode.patches.remove_duplicate_shop_types
 airplane_mode.patches.cleanup_unused_doctypes
+airplane_mode.patches.v1_0.add_cancelled_status_to_airplane_ticket
