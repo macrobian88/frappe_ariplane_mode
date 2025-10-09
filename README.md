@@ -394,12 +394,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Installation Troubleshooting](INSTALLATION_TROUBLESHOOTING.md) - Common issues
 
 ### Community Support
-- 📧 **Email**: nandhakishore2165@gmail.com
+- 📧 **Email**: ram@walue.biz
 - 🐛 **Issues**: [GitHub Issues](https://github.com/macrobian88/frappe_ariplane_mode/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/macrobian88/frappe_ariplane_mode/discussions)
 
 ### Commercial Support
-For enterprise support, custom development, and consultation services, contact nandhakishore2165@gmail.com.
+For enterprise support, custom development, and consultation services, contact ram@walue.biz.
 
 ## 🎯 Roadmap
 
