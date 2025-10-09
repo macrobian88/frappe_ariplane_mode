@@ -6,27 +6,34 @@ A comprehensive Frappe application for managing airport operations including fli
 
 ## ⚠️ Quick Fixes
 
-### 🔧 JavaScript MIME Type Error Fix
-If you encounter this error in browser console:
+### 🔧 Complete Asset and Route Error Fix
+If you encounter these errors:
 ```
-Refused to execute script from '.../assets/airplane_mode/js/airplane_mode.js' because its MIME type ('text/html') is not executable
+GET /shop-availability 404 (Not Found)
+GET /assets/airplane_mode/css/web.css 404 (Not Found)  
+GET /assets/airplane_mode/js/airplane_mode.js 404 (Not Found)
+Refused to apply style... MIME type ('text/html') is not a supported stylesheet MIME type
+Refused to execute script... MIME type ('text/html') is not executable
 ```
 
-**Quick Solution:**
+**🚀 One-Click Solution:**
 ```bash
-# Run the automated fix script
+# Pull latest fixes
+git pull origin main
+
+# Run comprehensive fix
 chmod +x fix_mime_types.sh
 ./fix_mime_types.sh
 ```
 
-**Or manual fix:**
+**📖 See [COMPLETE_ASSET_FIX_GUIDE.md](COMPLETE_ASSET_FIX_GUIDE.md) for detailed troubleshooting**
+
+### 🛠️ Manual Fix (if script fails):
 ```bash
 bench clear-cache
 bench build --app airplane_mode --force
 bench restart
 ```
-
-📖 **See [JAVASCRIPT_MIME_TYPE_FIX.md](JAVASCRIPT_MIME_TYPE_FIX.md) for detailed troubleshooting**
 
 ## 🌟 New Features & Updates
 
@@ -46,6 +53,8 @@ bench restart
 - **Advanced Analytics**: Revenue summaries and occupancy reports
 
 ### ⚡ Critical Fixes
+- ✅ **Complete Asset Fix**: Added missing CSS, images, and proper MIME types
+- ✅ **Route Issues**: Fixed 404 errors for shop-availability and other pages
 - ✅ **JavaScript MIME Type Issues**: Fixed asset serving with proper content types
 - ✅ **Airport Shop Search Error**: Fixed `AttributeError` in permission queries
 - ✅ **Link Field Issues**: Resolved search functionality in contracts
@@ -74,7 +83,8 @@ bench --site your-site-name execute airplane_mode.create_bulk_sample_data
 bench clear-cache
 bench restart
 
-# Fix any MIME type issues (if needed)
+# Fix any asset issues (if needed)
+chmod +x fix_mime_types.sh
 ./fix_mime_types.sh
 ```
 
@@ -289,12 +299,16 @@ Expected output with bulk data:
 - Airport Shops: 120+
 - Occupancy Rate: ~70%
 
-### 3. Performance Testing
+### 3. Test Website Access
 ```bash
-# Test search performance with large datasets
-# Navigate to Airport Shop list
-# Apply filters and verify quick response
-# Test link field searches in contracts
+# Test website routes
+curl -I https://your-site.com/shop-availability
+curl -I https://your-site.com/shop-portal
+curl -I https://your-site.com/apply-shop
+
+# Test asset loading
+curl -I https://your-site.com/assets/airplane_mode/css/web.css
+curl -I https://your-site.com/assets/airplane_mode/js/airplane_mode.js
 ```
 
 ## 📚 Documentation
@@ -305,7 +319,10 @@ Expected output with bulk data:
 - [💾 **Demo Data Script**](install_demo_data.py) - Basic demo data installation
 - [🎯 **Bulk Data Script**](create_bulk_sample_data.py) - Comprehensive bulk data creation
 - [🔧 **Installation Troubleshooting**](INSTALLATION_TROUBLESHOOTING.md) - Common issues and solutions
-- [🛠️ **JavaScript MIME Type Fix**](JAVASCRIPT_MIME_TYPE_FIX.md) - Resolve asset serving issues
+
+### Error Resolution
+- [🛠️ **Complete Asset Fix Guide**](COMPLETE_ASSET_FIX_GUIDE.md) - Comprehensive 404 and MIME type fixes
+- [🔧 **JavaScript MIME Type Fix**](JAVASCRIPT_MIME_TYPE_FIX.md) - Resolve JavaScript execution issues
 
 ### Advanced Usage
 - API documentation for shop portal integration
@@ -340,19 +357,28 @@ Expected output with bulk data:
 
 ### Common Issues
 
-#### 🔧 JavaScript MIME Type Errors
+#### 🔧 Complete Asset and Route Errors
 ```bash
-# Run automated fix script
-chmod +x fix_mime_types.sh
+# One-click comprehensive fix
 ./fix_mime_types.sh
 
-# Or manual fix
+# Manual step-by-step fix
 bench clear-cache
 bench build --app airplane_mode --force
 bench restart
 ```
 
-📖 **See [JAVASCRIPT_MIME_TYPE_FIX.md](JAVASCRIPT_MIME_TYPE_FIX.md) for complete troubleshooting guide**
+**📖 See [COMPLETE_ASSET_FIX_GUIDE.md](COMPLETE_ASSET_FIX_GUIDE.md) for detailed troubleshooting**
+
+#### 🔧 JavaScript MIME Type Errors
+```bash
+# Quick fix for MIME type issues
+bench clear-cache
+bench build --app airplane_mode --force
+bench restart
+```
+
+**📖 See [JAVASCRIPT_MIME_TYPE_FIX.md](JAVASCRIPT_MIME_TYPE_FIX.md) for complete troubleshooting guide**
 
 #### Installation Problems
 ```bash
@@ -435,6 +461,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md) - Step-by-step installation
 - [Workspace Setup](AIRPORT_SHOP_WORKSPACE_SETUP.md) - Workspace configuration
 - [Installation Troubleshooting](INSTALLATION_TROUBLESHOOTING.md) - Common issues
+- [Complete Asset Fix Guide](COMPLETE_ASSET_FIX_GUIDE.md) - 404 and MIME type fixes
 - [JavaScript MIME Type Fix](JAVASCRIPT_MIME_TYPE_FIX.md) - Asset serving issues
 
 ### Community Support
@@ -455,7 +482,8 @@ For enterprise support, custom development, and consultation services, contact r
 - Bulk demo data creation (120+ shops, 55+ aircraft)
 - Performance-optimized large dataset handling
 - Custom workspaces with dashboards
-- JavaScript MIME type fixes for proper asset serving
+- Complete asset and MIME type fixes for production deployment
+- Comprehensive troubleshooting documentation
 
 ### Upcoming Features 🔄
 - **Mobile App**: React Native application for shop management
@@ -473,6 +501,7 @@ For enterprise support, custom development, and consultation services, contact r
 - **Custom Reports**: 5+ analytics reports and dashboards
 - **Permission Roles**: 4+ user role configurations
 - **Performance**: Optimized for 1000+ records per DocType
+- **Asset Files**: Complete CSS, JS, and image assets with proper MIME types
 
 ---
 
@@ -481,18 +510,18 @@ For enterprise support, custom development, and consultation services, contact r
 Transform your airport operations with this comprehensive management solution. Use the bulk data creation script to have a fully populated system running in minutes!
 
 ```bash
-# Quick start with full dataset
+# Quick start with full dataset and fixes
 git clone https://github.com/macrobian88/frappe_ariplane_mode.git
 bench get-app ./frappe_ariplane_mode
 bench --site your-site-name install-app airplane_mode
 bench --site your-site-name execute airplane_mode.create_bulk_sample_data
 
-# Fix any MIME type issues
+# Fix any asset or MIME type issues
 chmod +x fix_mime_types.sh
 ./fix_mime_types.sh
 ```
 
-**Latest Version**: 2.3.0 (with MIME Type Fixes)  
+**Latest Version**: 2.4.0 (with Complete Asset Fixes)  
 **Repository**: https://github.com/macrobian88/frappe_ariplane_mode  
 **Last Updated**: October 9, 2025  
 **Compatible With**: Frappe v15.x, ERPNext v15.x
