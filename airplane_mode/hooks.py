@@ -33,7 +33,9 @@ doctype_js = {
     "Airplane Flight": "public/js/airplane_flight.js",
     "Airport Shop": "public/js/airport_shop.js",
     "Contract Shop": "public/js/contract_shop.js",
-    "Shop Lead": "public/js/shop_lead.js"
+    "Shop Lead": "public/js/shop_lead.js",
+    "Monthly Invoice": "public/js/monthly_invoice.js",
+    "Rent Payment Contract": "public/js/rent_payment_contract.js"
 }
 
 # Document Events
@@ -48,8 +50,14 @@ doc_events = {
         "on_trash": "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.update_flight_occupancy"
     },
     "Contract Shop": {
-        "on_submit": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.create_invoice",
-        "validate": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.validate_contract"
+        "on_submit": "airplane_mode.airport_shop_management.doctype.contract_shop.contract_shop.create_invoice",
+        "validate": "airplane_mode.airport_shop_management.doctype.contract_shop.contract_shop.validate_contract"
+    },
+    "Monthly Invoice": {
+        "on_submit": "airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.update_payment_status"
+    },
+    "Rent Payment Contract": {
+        "on_submit": "airplane_mode.airport_shop_management.doctype.rent_payment_contract.rent_payment_contract.update_monthly_invoice"
     },
     "Sales Invoice": {
         "on_update": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.update_contract_payment_status"
@@ -67,6 +75,7 @@ scheduler_events = {
     "daily": [
         "airplane_mode.airport_shop_management.rent_reminder.send_rent_reminders",
         "airplane_mode.airport_shop_management.rent_collection.process_monthly_invoices",
+        "airplane_mode.airport_shop_management.doctype.rent_remainder_alerts.rent_remainder_alerts.check_rent_due_alerts",
         "airplane_mode.airplane_mode.doctype.airplane_flight.airplane_flight.recalculate_all_flight_occupancy"
     ],
     "weekly": [
@@ -102,18 +111,23 @@ fixtures = [
     {
         "dt": "Number Card",
         "filters": [["parent", "=", "Airplane Mode"]]
+    },
+    {
+        "dt": "Airport Shop Settings"
     }
 ]
 
 # Permissions
 permission_query_conditions = {
     "Airport Shop": "airplane_mode.airplane_mode.doctype.airport_shop.airport_shop.get_permission_query_conditions",
-    "Contract Shop": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.get_permission_query_conditions"
+    "Contract Shop": "airplane_mode.airport_shop_management.doctype.contract_shop.contract_shop.get_permission_query_conditions",
+    "Monthly Invoice": "airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.get_permission_query_conditions"
 }
 
 has_permission = {
     "Airport Shop": "airplane_mode.airplane_mode.doctype.airport_shop.airport_shop.has_permission",
-    "Contract Shop": "airplane_mode.airplane_mode.doctype.contract_shop.contract_shop.has_permission"
+    "Contract Shop": "airplane_mode.airport_shop_management.doctype.contract_shop.contract_shop.has_permission",
+    "Monthly Invoice": "airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.has_permission"
 }
 
 # Jinja Methods
@@ -141,7 +155,9 @@ export_python_type_annotations = True
 # Default Log Clearing
 default_log_clearing_doctypes = {
     "Shop Lead": 90,  # 3 months
-    "Contract Shop": 365  # 1 year
+    "Contract Shop": 365,  # 1 year
+    "Monthly Invoice": 365,  # 1 year
+    "Rent Remainder Alerts": 180  # 6 months
 }
 
 # Website Theme
@@ -169,6 +185,11 @@ standard_email_templates = [
         "name": "Contract Renewal",
         "subject": "Shop Contract Renewal Notice",
         "response": "airplane_mode/templates/emails/contract_renewal.html"
+    },
+    {
+        "name": "Payment Overdue",
+        "subject": "Payment Overdue Notice",
+        "response": "airplane_mode/templates/emails/payment_overdue.html"
     }
 ]
 
@@ -190,6 +211,12 @@ auto_email_reports = [
         "report": "Revenue Analytics",
         "email_to": ["finance@airport.com"],
         "frequency": "Monthly", 
+        "format": "Excel"
+    },
+    {
+        "report": "Rent Collection Summary",
+        "email_to": ["finance@airport.com"],
+        "frequency": "Monthly",
         "format": "Excel"
     }
 ]
@@ -227,6 +254,22 @@ dashboard_charts = [
         "based_on": "creation",
         "value_based_on": "total_price",
         "timeseries": 1
+    },
+    {
+        "chart_name": "Shop Revenue Trend",
+        "chart_type": "line",
+        "doctype": "Monthly Invoice", 
+        "based_on": "creation",
+        "value_based_on": "invoice_amount",
+        "timeseries": 1
+    },
+    {
+        "chart_name": "Payment Status Distribution",
+        "chart_type": "donut",
+        "doctype": "Monthly Invoice",
+        "based_on": "payment_status",
+        "timeseries": 0,
+        "value_based_on": "count"
     }
 ]
 
@@ -271,6 +314,36 @@ number_cards = [
         "is_public": 1,
         "show_percentage_stats": 1,
         "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Active Shops",
+        "doctype": "Contract Shop",
+        "function": "Count",
+        "aggregate_function_based_on": "",
+        "filters_json": "[[\"Contract Shop\",\"status\",\"=\",\"Active\"]]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Pending Payments",
+        "doctype": "Monthly Invoice",
+        "function": "Count",
+        "aggregate_function_based_on": "",
+        "filters_json": "[[\"Monthly Invoice\",\"payment_status\",\"=\",\"Unpaid\"]]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Daily"
+    },
+    {
+        "name": "Shop Revenue",
+        "doctype": "Monthly Invoice",
+        "function": "Sum",
+        "aggregate_function_based_on": "invoice_amount",
+        "filters_json": "[[\"Monthly Invoice\",\"payment_status\",\"=\",\"Paid\"]]",
+        "is_public": 1,
+        "show_percentage_stats": 1,
+        "stats_time_interval": "Monthly"
     }
 ]
 
@@ -306,6 +379,12 @@ onboard_steps = [
         "action_label": "Add Shop"
     },
     {
+        "step": "Configure Airport Shop Settings",
+        "description": "Set up payment terms and alert preferences",
+        "action": "Setup Airport Shop Settings",
+        "action_label": "Configure Settings"
+    },
+    {
         "step": "Configure Email Settings",
         "description": "Set up email notifications for leads and contracts",
         "action": "Setup Email",
@@ -314,9 +393,9 @@ onboard_steps = [
 ]
 
 # NOTES:
-# 1. Added dashboard JavaScript include for airplane_dashboard.js
-# 2. Added website route for airplane-dashboard 
-# 3. Added Workspace and Number Card fixtures
-# 4. Added dashboard charts configuration
-# 5. Added number cards configuration for counters
-# 6. This ensures the dashboard counters will be displayed properly
+# 1. Added Airport Shop Management DocTypes to document events
+# 2. Added scheduled task for rent remainder alerts
+# 3. Added dashboard charts for shop revenue and payment status
+# 4. Added number cards for shop metrics
+# 5. Added Airport Shop Settings to fixtures and onboard steps
+# 6. Updated DocType paths to reflect Airport Shop Management module
