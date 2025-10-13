@@ -1,27 +1,69 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{contract}-{month}",
+ "autoname": "naming_series:",
  "creation": "2025-08-22 11:06:58.485144",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
+  "invoice_details_section",
   "contract",
+  "tenant_name",
+  "shop_details",
+  "column_break_4",
   "month",
   "due_date",
+  "invoice_date",
+  "payment_section",
   "invoice_amount",
   "payment_status",
+  "payment_mode",
+  "column_break_payment",
   "payment_date",
+  "payment_reference",
+  "receipt_number",
+  "additional_info_section",
+  "remarks",
   "amended_from"
  ],
  "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "INV-.YYYY.-"
+  },
+  {
+   "fieldname": "invoice_details_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Details"
+  },
   {
    "fieldname": "contract",
    "fieldtype": "Link",
    "label": "Contract",
    "options": "Shop Lease Contract",
    "reqd": 1
+  },
+  {
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name",
+   "read_only": 1,
+   "fetch_from": "contract.tenant"
+  },
+  {
+   "fieldname": "shop_details",
+   "fieldtype": "Data",
+   "label": "Shop",
+   "read_only": 1,
+   "fetch_from": "contract.contract_shop"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "month",
@@ -32,24 +74,71 @@
   {
    "fieldname": "due_date",
    "fieldtype": "Date",
-   "label": "Due Date"
+   "label": "Due Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date",
+   "default": "Today"
+  },
+  {
+   "fieldname": "payment_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
   },
   {
    "fieldname": "invoice_amount",
    "fieldtype": "Currency",
-   "label": "Invoice Amount"
+   "label": "Invoice Amount",
+   "reqd": 1
   },
   {
    "fieldname": "payment_status",
    "fieldtype": "Select",
    "label": "Payment Status",
-   "options": "Unpaid\nPaid"
+   "options": "Unpaid\nPaid\nOverdue",
+   "default": "Unpaid"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "\nCash\nBank Transfer\nCheque\nUPI\nCard Payment",
+   "depends_on": "eval:doc.payment_status=='Paid'"
+  },
+  {
+   "fieldname": "column_break_payment",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "payment_date",
    "fieldtype": "Date",
    "label": "Payment Date",
+   "depends_on": "eval:doc.payment_status=='Paid'"
+  },
+  {
+   "fieldname": "payment_reference",
+   "fieldtype": "Data",
+   "label": "Payment Reference/Transaction ID",
+   "depends_on": "eval:doc.payment_status=='Paid'"
+  },
+  {
+   "fieldname": "receipt_number",
+   "fieldtype": "Data",
+   "label": "Receipt Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "additional_info_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   },
   {
    "fieldname": "amended_from",
@@ -65,11 +154,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-08 16:24:27.640059",
+ "modified": "2025-10-13 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "Airport Shop Management",
  "name": "Monthly Invoice",
- "naming_rule": "Expression",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -82,11 +171,26 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Airport Shop Manager",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "title_field": "month"
 }
