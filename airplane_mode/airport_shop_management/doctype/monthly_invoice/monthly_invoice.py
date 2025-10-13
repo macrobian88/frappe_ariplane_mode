@@ -1,58 +1,149 @@
-# Copyright (c) 2025, nandhakishore and contributors
+# Copyright (c) 2025, Airplane Mode and contributors
 # For license information, please see license.txt
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import today
 
 class MonthlyInvoice(Document):
-	def validate(self):
-		"""Validate the Monthly Invoice before saving"""
-		if self.payment_status == "Paid" and not self.payment_date:
-			self.payment_date = today()
-			
-	def on_submit(self):
-		"""Actions to perform when the invoice is submitted"""
-		if self.payment_status == "Paid":
-			self.update_payment_status()
-			
-	def update_payment_status(self):
-		"""Update payment status and date"""
-		if self.payment_status == "Paid" and not self.payment_date:
-			self.payment_date = today()
-			self.save()
+    def validate(self):
+        """Validate and set default values"""
+        self.set_tenant_and_shop_details()
+        self.set_invoice_amount_from_contract()
+        self.generate_receipt_number()
+    
+    def set_tenant_and_shop_details(self):
+        """Auto-fetch tenant and shop details from contract"""
+        if self.contract and not (self.tenant_name and self.shop_details):
+            try:
+                contract_doc = frappe.get_doc("Shop Lease Contract", self.contract)
+                
+                # Set tenant name
+                if contract_doc.tenant and not self.tenant_name:
+                    tenant_doc = frappe.get_doc("Tenant", contract_doc.tenant)
+                    self.tenant_name = tenant_doc.full_name or tenant_doc.customer or tenant_doc.name
+                
+                # Set shop details
+                if contract_doc.contract_shop and not self.shop_details:
+                    shop_doc = frappe.get_doc("Airport Shop", contract_doc.contract_shop)
+                    self.shop_details = f"{shop_doc.shop_number} - {shop_doc.shop_name}"
+                    
+            except Exception as e:
+                frappe.log_error(f"Error fetching contract details: {str(e)}", "Monthly Invoice Validation")
+    
+    def set_invoice_amount_from_contract(self):
+        """Auto-set invoice amount from contract if not already set"""
+        if self.contract and not self.invoice_amount:
+            try:
+                contract_doc = frappe.get_doc("Shop Lease Contract", self.contract)
+                if contract_doc.rent_amount:
+                    self.invoice_amount = contract_doc.rent_amount
+            except Exception as e:
+                frappe.log_error(f"Error fetching rent amount: {str(e)}", "Monthly Invoice Validation")
+    
+    def generate_receipt_number(self):
+        """Generate receipt number when payment status is Paid"""
+        if self.payment_status == "Paid" and not self.receipt_number:
+            try:
+                # Generate receipt number format: RCP-YYYY-MON-XXXX
+                import datetime
+                import random
+                import string
+                
+                year = datetime.datetime.now().year
+                month_code = self.month[:3].upper() if self.month else "XXX"
+                random_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+                
+                self.receipt_number = f"RCP-{year}-{month_code}-{random_code}"
+            except Exception as e:
+                frappe.log_error(f"Error generating receipt number: {str(e)}", "Monthly Invoice Validation")
+    
+    def before_save(self):
+        """Before save operations"""
+        # Set payment date when status changes to Paid
+        if self.payment_status == "Paid" and not self.payment_date:
+            self.payment_date = frappe.utils.today()
+        
+        # Clear payment fields if status changes to Unpaid
+        if self.payment_status == "Unpaid":
+            self.payment_date = None
+            self.payment_mode = None
+            self.payment_reference = None
+            self.receipt_number = None
+        
+        # Check for overdue status
+        if self.payment_status == "Unpaid" and self.due_date:
+            if frappe.utils.getdate(self.due_date) < frappe.utils.getdate():
+                self.payment_status = "Overdue"
+    
+    def after_insert(self):
+        """After insert operations"""
+        self.update_contract_payment_summary()
+    
+    def on_update(self):
+        """After update operations"""
+        self.update_contract_payment_summary()
+    
+    def update_contract_payment_summary(self):
+        """Update contract payment summary when invoice is created or updated"""
+        if self.contract:
+            try:
+                # Calculate total paid and outstanding amounts for the contract
+                paid_invoices = frappe.get_all("Monthly Invoice",
+                    filters={"contract": self.contract, "payment_status": "Paid"},
+                    fields=["invoice_amount"]
+                )
+                
+                total_paid = sum(invoice.invoice_amount for invoice in paid_invoices)
+                
+                # Update contract totals (if these fields exist in Shop Lease Contract)
+                frappe.db.set_value("Shop Lease Contract", self.contract, "total_paid_amount", total_paid)
+                
+            except Exception as e:
+                frappe.log_error(f"Error updating contract payment summary: {str(e)}", "Monthly Invoice Update")
 
+@frappe.whitelist()
+def get_contract_details(contract):
+    """API method to get contract details for JavaScript"""
+    try:
+        if not contract:
+            return {}
+        
+        contract_doc = frappe.get_doc("Shop Lease Contract", contract)
+        result = {
+            "rent_amount": contract_doc.rent_amount,
+            "tenant_name": "",
+            "shop_details": ""
+        }
+        
+        # Get tenant details
+        if contract_doc.tenant:
+            tenant_doc = frappe.get_doc("Tenant", contract_doc.tenant)
+            result["tenant_name"] = tenant_doc.full_name or tenant_doc.customer or tenant_doc.name
+        
+        # Get shop details
+        if contract_doc.contract_shop:
+            shop_doc = frappe.get_doc("Airport Shop", contract_doc.contract_shop)
+            result["shop_details"] = f"{shop_doc.shop_number} - {shop_doc.shop_name}"
+        
+        return result
+        
+    except Exception as e:
+        frappe.log_error(f"Error in get_contract_details: {str(e)}", "Monthly Invoice API")
+        return {}
 
-# Module-level permission functions (FIXED: Moved outside the class)
-def get_permission_query_conditions(user):
-	"""Return permission query conditions for Monthly Invoice"""
-	if not user:
-		user = frappe.session.user
-	
-	if "System Manager" in frappe.get_roles(user):
-		return ""
-	
-	# Regular users can only see invoices for their contracts
-	return f"""(`tabMonthly Invoice`.owner = '{user}')"""
-
-
-def has_permission(doc, user):
-	"""Check if user has permission for Monthly Invoice document"""
-	if not user:
-		user = frappe.session.user
-	
-	if "System Manager" in frappe.get_roles(user):
-		return True
-	
-	# Check if user owns the contract
-	if doc.contract:
-		contract = frappe.get_doc("Shop Lease Contract", doc.contract)
-		return contract.owner == user or contract.tenant_email == user
-	
-	return False
-
-
-def update_payment_status(doc, method):
-	"""Hook function called on Monthly Invoice submission"""
-	if doc.payment_status == "Paid" and not doc.payment_date:
-		doc.payment_date = today()
+@frappe.whitelist()
+def get_receipt_html(name):
+    """Get formatted receipt HTML for printing"""
+    try:
+        doc = frappe.get_doc("Monthly Invoice", name)
+        if doc.payment_status != "Paid":
+            frappe.throw("Receipt can only be generated for paid invoices")
+        
+        # Use the print format to generate HTML
+        print_format = "Rent Receipt Format"
+        html = frappe.get_print(doc.doctype, doc.name, print_format)
+        return {"html": html}
+        
+    except Exception as e:
+        frappe.log_error(f"Error generating receipt HTML: {str(e)}", "Monthly Invoice Receipt")
+        frappe.throw(f"Error generating receipt: {str(e)}")
