@@ -101,6 +101,37 @@ class MonthlyInvoice(Document):
             except Exception as e:
                 frappe.log_error(f"Error updating contract payment summary: {str(e)}", "Monthly Invoice Update")
 
+# Permission query conditions for list view access
+def get_permission_query_conditions(user):
+    """Define permission conditions for Monthly Invoice list view"""
+    if not user:
+        user = frappe.session.user
+    
+    # Allow System Manager and Airport Shop Manager to see all records
+    if "System Manager" in frappe.get_roles(user) or "Airport Shop Manager" in frappe.get_roles(user):
+        return None
+    
+    # For other users, show only their own records or records they have access to
+    return """`tabMonthly Invoice`.owner = '{user}'""".format(user=frappe.db.escape(user))
+
+def has_permission(doc, user):
+    """Check if user has permission to access a specific Monthly Invoice"""
+    if not user:
+        user = frappe.session.user
+    
+    # Allow System Manager and Airport Shop Manager full access
+    if "System Manager" in frappe.get_roles(user) or "Airport Shop Manager" in frappe.get_roles(user):
+        return True
+    
+    # Check if user is the owner
+    if doc.owner == user:
+        return True
+    
+    # Additional permission logic can be added here
+    # For example, check if user is associated with the tenant or contract
+    
+    return False
+
 @frappe.whitelist()
 def get_contract_details(contract):
     """API method to get contract details for JavaScript"""
@@ -147,3 +178,66 @@ def get_receipt_html(name):
     except Exception as e:
         frappe.log_error(f"Error generating receipt HTML: {str(e)}", "Monthly Invoice Receipt")
         frappe.throw(f"Error generating receipt: {str(e)}")
+
+@frappe.whitelist()
+def create_monthly_invoices_for_active_contracts():
+    """Create monthly invoices for all active contracts"""
+    try:
+        import datetime
+        
+        # Get current month and year
+        now = datetime.datetime.now()
+        current_month = now.strftime("%B %Y")
+        
+        # Get all active contracts
+        active_contracts = frappe.get_all("Shop Lease Contract", 
+            filters={"status": "Active"}, 
+            fields=["name", "tenant", "contract_shop", "rent_amount"]
+        )
+        
+        created_count = 0
+        for contract in active_contracts:
+            # Check if invoice already exists for this month
+            existing_invoice = frappe.db.exists("Monthly Invoice", {
+                "contract": contract.name,
+                "month": current_month
+            })
+            
+            if not existing_invoice:
+                # Create new invoice
+                invoice = frappe.new_doc("Monthly Invoice")
+                invoice.contract = contract.name
+                invoice.month = current_month
+                invoice.invoice_amount = contract.rent_amount
+                invoice.due_date = datetime.date(now.year, now.month, 5)  # Due on 5th of month
+                invoice.payment_status = "Unpaid"
+                
+                invoice.save()
+                invoice.submit()
+                created_count += 1
+        
+        return {"message": f"Created {created_count} monthly invoices", "count": created_count}
+        
+    except Exception as e:
+        frappe.log_error(f"Error creating monthly invoices: {str(e)}", "Monthly Invoice Batch Creation")
+        frappe.throw(f"Error creating monthly invoices: {str(e)}")
+
+@frappe.whitelist()
+def get_overdue_invoices():
+    """Get list of overdue invoices"""
+    try:
+        overdue_invoices = frappe.get_all("Monthly Invoice",
+            filters={
+                "payment_status": ["in", ["Unpaid", "Overdue"]],
+                "due_date": ["<", frappe.utils.today()],
+                "docstatus": 1
+            },
+            fields=["name", "contract", "month", "due_date", "invoice_amount", "tenant_name", "shop_details"],
+            order_by="due_date asc"
+        )
+        
+        return overdue_invoices
+        
+    except Exception as e:
+        frappe.log_error(f"Error getting overdue invoices: {str(e)}", "Monthly Invoice Overdue")
+        return []
