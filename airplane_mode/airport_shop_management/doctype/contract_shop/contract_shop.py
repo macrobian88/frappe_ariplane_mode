@@ -33,27 +33,28 @@ class ContractShop(Document):
 		# This can be enhanced to automatically create invoices
 		pass
 
-	def get_permission_query_conditions(user):
-		"""Return permission query conditions for Contract Shop"""
-		if not user:
-			user = frappe.session.user
-		
-		if "System Manager" in frappe.get_roles(user):
-			return ""
-		
-		# Regular users can only see their own contracts
-		return f"""(`tabContract Shop`.owner = '{user}' OR `tabContract Shop`.tenant_email = '{user}')"""
+# Permission functions must be module-level, not inside the class
+def get_permission_query_conditions(user):
+	"""Return permission query conditions for Contract Shop"""
+	if not user:
+		user = frappe.session.user
+	
+	if "System Manager" in frappe.get_roles(user):
+		return ""
+	
+	# Regular users can only see their own contracts
+	return f"""(`tabContract Shop`.owner = '{user}' OR `tabContract Shop`.tenant_email = '{user}')"""
 
-	def has_permission(doc, user):
-		"""Check if user has permission for Contract Shop document"""
-		if not user:
-			user = frappe.session.user
-		
-		if "System Manager" in frappe.get_roles(user):
-			return True
-		
-		# Check if user owns the contract or is the tenant
-		return doc.owner == user or doc.tenant_email == user
+def has_permission(doc, user):
+	"""Check if user has permission for Contract Shop document"""
+	if not user:
+		user = frappe.session.user
+	
+	if "System Manager" in frappe.get_roles(user):
+		return True
+	
+	# Check if user owns the contract or is the tenant
+	return doc.owner == user or doc.tenant_email == user
 
 def create_invoice(doc, method):
 	"""Create monthly invoice for contract"""
