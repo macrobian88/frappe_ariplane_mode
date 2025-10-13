@@ -36,6 +36,42 @@ frappe.ui.form.on('Monthly Invoice', {
             }, __('Print'));
         }
         
+        // Add actions menu items
+        if (!frm.is_new()) {
+            // Mark as paid button for unpaid invoices
+            if (frm.doc.payment_status !== 'Paid') {
+                frm.add_custom_button(__('Mark as Paid'), function() {
+                    frappe.prompt([
+                        {
+                            fieldname: 'payment_mode',
+                            label: __('Payment Mode'),
+                            fieldtype: 'Select',
+                            options: 'Cash\nBank Transfer\nCheque\nUPI\nCard Payment',
+                            reqd: 1
+                        },
+                        {
+                            fieldname: 'payment_reference',
+                            label: __('Payment Reference/Transaction ID'),
+                            fieldtype: 'Data'
+                        },
+                        {
+                            fieldname: 'payment_date',
+                            label: __('Payment Date'),
+                            fieldtype: 'Date',
+                            default: frappe.datetime.get_today(),
+                            reqd: 1
+                        }
+                    ], function(values) {
+                        frm.set_value('payment_status', 'Paid');
+                        frm.set_value('payment_mode', values.payment_mode);
+                        frm.set_value('payment_reference', values.payment_reference);
+                        frm.set_value('payment_date', values.payment_date);
+                        frm.save();
+                    }, __('Record Payment'), __('Mark as Paid'));
+                }, __('Actions'));
+            }
+        }
+        
         // Show alert if payment is overdue
         if (frm.doc.payment_status === 'Unpaid' && frm.doc.due_date) {
             let due_date = frappe.datetime.str_to_obj(frm.doc.due_date);
@@ -147,10 +183,72 @@ frappe.listview_settings['Monthly Invoice'] = {
     },
     
     onload: function(listview) {
-        // Add custom buttons to list view
-        listview.page.add_inner_button(__('Generate Monthly Invoices'), function() {
-            frappe.new_doc('Monthly Invoice');
-        });
+        // Add bulk invoice creation button
+        if (frappe.user.has_role(['System Manager', 'Airport Shop Manager'])) {
+            listview.page.add_inner_button(__('Create Monthly Invoices'), function() {
+                frappe.confirm(
+                    __('This will create monthly invoices for all active contracts for the current month. Continue?'),
+                    function() {
+                        frappe.call({
+                            method: 'airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.create_monthly_invoices_for_active_contracts',
+                            callback: function(r) {
+                                if (r.message) {
+                                    frappe.show_alert({
+                                        message: r.message.message,
+                                        indicator: 'green'
+                                    });
+                                    listview.refresh();
+                                }
+                            },
+                            error: function(r) {
+                                frappe.msgprint(__('Error creating invoices: ' + (r.message || 'Unknown error')));
+                            }
+                        });
+                    }
+                );
+            });
+            
+            // Add overdue invoices report button
+            listview.page.add_inner_button(__('View Overdue'), function() {
+                frappe.call({
+                    method: 'airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.get_overdue_invoices',
+                    callback: function(r) {
+                        if (r.message && r.message.length > 0) {
+                            // Create a dialog to show overdue invoices
+                            let dialog = new frappe.ui.Dialog({
+                                title: __('Overdue Invoices'),
+                                fields: [
+                                    {
+                                        fieldtype: 'HTML',
+                                        options: generate_overdue_table(r.message)
+                                    }
+                                ],
+                                size: 'large'
+                            });
+                            dialog.show();
+                        } else {
+                            frappe.show_alert({
+                                message: __('No overdue invoices found!'),
+                                indicator: 'green'
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Add filter buttons
+        listview.page.add_inner_button(__('Paid'), function() {
+            listview.filter_area.add([[listview.doctype, 'payment_status', '=', 'Paid']]);
+        }, __('Filter By'));
+        
+        listview.page.add_inner_button(__('Unpaid'), function() {
+            listview.filter_area.add([[listview.doctype, 'payment_status', '=', 'Unpaid']]);
+        }, __('Filter By'));
+        
+        listview.page.add_inner_button(__('Overdue'), function() {
+            listview.filter_area.add([[listview.doctype, 'payment_status', '=', 'Overdue']]);
+        }, __('Filter By'));
     }
 };
 
@@ -181,3 +279,53 @@ frappe.ui.form.on('Monthly Invoice', {
         return true;
     }
 });
+
+// Helper function to generate overdue invoices table
+function generate_overdue_table(overdue_invoices) {
+    let table_html = `
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Tenant</th>
+                    <th>Shop</th>
+                    <th>Month</th>
+                    <th>Due Date</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    overdue_invoices.forEach(function(invoice) {
+        table_html += `
+            <tr>
+                <td><a href="/app/monthly-invoice/${invoice.name}">${invoice.name}</a></td>
+                <td>${invoice.tenant_name || 'N/A'}</td>
+                <td>${invoice.shop_details || 'N/A'}</td>
+                <td>${invoice.month}</td>
+                <td class="text-danger">${frappe.datetime.str_to_user(invoice.due_date)}</td>
+                <td>₹${frappe.format(invoice.invoice_amount, 'Currency')}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="frappe.set_route('Form', 'Monthly Invoice', '${invoice.name}')">
+                        View
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    table_html += `
+            </tbody>
+        </table>
+        <div class="mt-3">
+            <p class="text-muted">
+                <i class="fa fa-info-circle"></i> 
+                Total overdue invoices: <strong>${overdue_invoices.length}</strong>
+            </p>
+        </div>
+    `;
+    
+    return table_html;
+}
